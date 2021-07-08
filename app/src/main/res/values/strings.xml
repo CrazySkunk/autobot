@@ -1,6 +1,16 @@
+<<<<<<< HEAD
 <resources>
     <string name="app_name">AutoBot1</string>
     <string name="title_activity_maps">Map</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+=======
+<resources>
+    <string name="app_name">AutoBot1</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="drawer_opened">Navigation drawer opened</string>
+    <string name="drawer_closed">Navigation drawer closed</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+>>>>>>> b94704b8739a07420cbb519a1e7bb92900282808
 </resources>

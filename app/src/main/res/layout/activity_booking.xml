@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -106,4 +107,109 @@
 
     </RelativeLayout>
 
+=======
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context=".activities.Booking">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="10dp">
+
+        <TextView
+            android:id="@+id/textBooking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/antic"
+            android:text="Mechanic Schedule"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="30sp">
+
+        </TextView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textBooking"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical">
+
+            <ListView
+                android:id="@+id/lv_shedules"
+                android:layout_width="390dp"
+                android:layout_height="400dp"
+                android:background="@drawable/et_bg">
+
+            </ListView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/antic"
+                android:text="Input Pickup/Meetup Time"
+                android:textColor="#000000"
+                android:textSize="25sp">
+
+            </TextView>
+
+            <RelativeLayout
+                android:id="@+id/contactlinear2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:layout_width="150dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="35dp"
+                    android:background="@drawable/et_bg"
+                    android:inputType="datetime"
+                    android:textAllCaps="false"
+                    android:textColor="#000000">
+
+                </EditText>
+
+                <EditText
+                    android:layout_width="150dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="35dp"
+                    android:background="@drawable/et_bg"
+                    android:inputType="datetime"
+                    android:textAllCaps="false"
+                    android:textColor="#000000">
+
+                </EditText>
+
+                <Button
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="90dp"
+                    android:background="@drawable/et_bg"
+                    android:text="Confirm"
+                    android:textAllCaps="false"
+                    android:textColor="#000000"
+
+                    >
+
+                </Button>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+>>>>>>> b94704b8739a07420cbb519a1e7bb92900282808
 </RelativeLayout>

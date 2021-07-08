@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -148,4 +149,148 @@
 
     </RelativeLayout>
 
+=======
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    tools:context=".activities.MechanicMenu">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="20dp">
+
+        <ImageView
+            android:id="@+id/mechaniclogoImage"
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/bot3">
+
+        </ImageView>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/mechaniclogoImage"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                android:id="@+id/register"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/antic"
+                android:text="Username"
+                android:textColor="#000000"
+                android:textSize="30sp">
+
+            </TextView>
+
+            <LinearLayout
+                android:id="@+id/linea"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/register"
+                android:layout_marginTop="10dp">
+
+                <LinearLayout
+                    android:id="@+id/lineb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@drawable/et_bg"
+                        android:fontFamily="@font/antic"
+                        android:hint="Recent"
+                        android:textAlignment="center"
+                        android:textColor="#000000"
+                        android:textColorHint="#000000"
+                        android:textSize="15sp">
+
+                    </Button>
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/et_bg"
+                        android:fontFamily="@font/antic"
+                        android:hint="Schedules"
+                        android:textAlignment="center"
+                        android:textColor="#000000"
+                        android:textColorHint="#000000"
+                        android:textSize="15sp">
+
+                    </Button>
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/et_bg"
+                        android:fontFamily="@font/antic"
+                        android:hint="My shops"
+                        android:textAlignment="center"
+                        android:textColor="#000000"
+                        android:textColorHint="#000000"
+                        android:textSize="15sp">
+
+                    </Button>
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/et_bg"
+                        android:fontFamily="@font/antic"
+                        android:hint="Shop for parts"
+                        android:textAlignment="center"
+                        android:textColor="#000000"
+                        android:textColorHint="#000000"
+                        android:textSize="15sp">
+
+                    </Button>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/mechanicrellayc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="40dp">
+
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/et_bg"
+            android:text="User Options"
+            android:textAllCaps="false"
+            android:textColor="#000000">
+
+        </Button>
+
+
+    </RelativeLayout>
+
+>>>>>>> b94704b8739a07420cbb519a1e7bb92900282808
 </RelativeLayout>

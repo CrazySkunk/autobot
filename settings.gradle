@@ -1,2 +1,6 @@
+<<<<<<< HEAD
 include ':app'
+=======
+include ':app'
+>>>>>>> b94704b8739a07420cbb519a1e7bb92900282808
 rootProject.name = "AutoBot1"
