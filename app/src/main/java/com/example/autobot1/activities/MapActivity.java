@@ -43,7 +43,6 @@ public class MapActivity extends AppCompatActivity implements NavigationView.OnN
         setContentView(R.layout.activity_map);
         inflateFragContainer(MapFragment.newInstance(String.valueOf(latitude), String.valueOf(longitude)));
         drawerLayout = findViewById(R.id.drawer_layout);
-        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_opened, R.string.drawer_closed);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
