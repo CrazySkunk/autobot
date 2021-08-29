@@ -21,7 +21,7 @@
     <fragment
         android:id="@+id/schedule"
         android:label="Schedule"
-        android:name="com.example.autobot1.activities.mechanics.frags.BookingFragment"
+        android:name="com.example.autobot1.activities.landing.frags.BookingFragment"
         tools:layout="@layout/fragment_booking">
         <action android:id="@+id/go_to_next_frag"/>
     </fragment>

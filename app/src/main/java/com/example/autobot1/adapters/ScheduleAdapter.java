@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.example.autobot1.R;
 import com.example.autobot1.activities.mechanics.models.Bookings;
@@ -39,7 +38,7 @@ public class ScheduleAdapter extends ArrayAdapter<Bookings> {
     }
 
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder = new ViewHolder();
         View result;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -47,8 +46,7 @@ public class ScheduleAdapter extends ArrayAdapter<Bookings> {
             convertView = inflater.inflate(resource, parent, false);
             viewHolder.imageView = convertView.findViewById(R.id.booking_item_image);
             viewHolder.name = convertView.findViewById(R.id.booking_item_name);
-            viewHolder.meetUpTime = convertView.findViewById(R.id.meet_up_time);
-            viewHolder.pickUpTime = convertView.findViewById(R.id.pick_up_time);
+            viewHolder.meetUpTime = convertView.findViewById(R.id.date_time_tv);
             result = convertView;
             convertView.setTag(viewHolder);
         } else {

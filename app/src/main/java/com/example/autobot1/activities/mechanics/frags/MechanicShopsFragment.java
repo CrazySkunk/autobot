@@ -25,12 +25,6 @@ import java.util.List;
 
 
 public class MechanicShopsFragment extends Fragment {
-
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
     private RecyclerView shopsRecycler;
     private FragmentMechanicShopsBinding binding;
     private MechanicShopsViewModel viewModel;
@@ -39,23 +33,10 @@ public class MechanicShopsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static MechanicShopsFragment newInstance(String param1, String param2) {
-        MechanicShopsFragment fragment = new MechanicShopsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(requireActivity()).get(MechanicShopsViewModel.class);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        viewModel = new ViewModelProvider(this).get(MechanicShopsViewModel.class);
     }
 
     @Override
@@ -74,15 +55,11 @@ public class MechanicShopsFragment extends Fragment {
                 shopsRecycler.setClipToPadding(false);
                 shopsRecycler.hasFixedSize();
                 shopsRecycler.setAdapter(shopAdapter);
-                shopAdapter.setOnItemClickListener(new ShopAdapter.OnItemClick() {
-                    @Override
-                    public void onItemClick(int position) {
+                shopAdapter.setOnItemClickListener(position ->
                         requireActivity().getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.nav_host_fragment_container,
-                                        SpecificShopFragment.newInstance(shopItems.get(position).getTitle()));
-                    }
-                });
+                        .beginTransaction()
+                        .replace(R.id.nav_host_fragment_container,
+                                SpecificShopFragment.newInstance(shopItems.get(position).getTitle())));
             }
         });
 

@@ -9,7 +9,7 @@
     <item
         android:id="@+id/schedule"
         android:icon="@drawable/schedule"
-        android:title="Schedule" />
+        android:title="Bookings" />
     <item
         android:id="@+id/favorites"
         android:icon="@drawable/favorite"
@@ -21,5 +21,5 @@
     <item
         android:id="@+id/map"
         android:icon="@drawable/map"
-        android:title="Shop for parts" />
+        android:title="Map" />
 </menu>

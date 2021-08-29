@@ -27,7 +27,7 @@
         app:layout_constraintTop_toTopOf="@+id/booking_item_image" />
 
     <TextView
-        android:id="@+id/meet_up_time"
+        android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/meet_up_time"
@@ -38,27 +38,13 @@
         app:layout_constraintTop_toBottomOf="@+id/booking_item_name"
         app:layout_goneMarginStart="10dp" />
 
-    <TextView
-        android:id="@+id/pick_up_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/pick_up_time"
-        android:layout_marginStart="10dp"
-        android:paddingEnd="5dp"
-        android:paddingStart="5dp"
-        app:layout_constraintBottom_toBottomOf="@+id/meet_up_time"
-        app:layout_constraintStart_toEndOf="@+id/meet_up_time"
-        app:layout_constraintTop_toTopOf="@+id/meet_up_time" />
 
     <CheckBox
         android:id="@+id/done_check_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="@+id/pick_up_time"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"
-        app:layout_constraintStart_toEndOf="@+id/pick_up_time"
-        app:layout_constraintTop_toTopOf="@+id/pick_up_time"
-        app:layout_constraintVertical_bias="0.862" />
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

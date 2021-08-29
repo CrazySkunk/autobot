@@ -64,7 +64,7 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ShopViewHolder
         }
         public void bind(ShopItem shopItem){
             binding.shopTitleTextView.setText(shopItem.getTitle());
-            binding.shopLocationTextView.setText(shopItem.getLocation());
+            binding.shopLocationTextView.setText(shopItem.getLocation().getLatitude()+","+shopItem.getLocation().getLongitude());
             binding.shopDescriptionTextView.setText(shopItem.getDescription());
             Picasso.get().load(shopItem.getImageUrl()).placeholder(R.drawable.bot).into(binding.shopItemImageView);
         }

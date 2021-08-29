@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../../layout/custom_preview.xml" value="0.3765625" />
         <entry key="app/src/main/res/drawable/logout.xml" value="0.38333333333333336" />
         <entry key="app/src/main/res/layout/account_type_dialog.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_booking.xml" value="0.3671875" />
@@ -20,14 +21,20 @@
         <entry key="app/src/main/res/layout/activity_schedules.xml" value="0.3671875" />
         <entry key="app/src/main/res/layout/activity_users.xml" value="0.3541666666666667" />
         <entry key="app/src/main/res/layout/booking_item.xml" value="0.3671875" />
+        <entry key="app/src/main/res/layout/cart_item.xml" value="0.3614583333333333" />
         <entry key="app/src/main/res/layout/content_credentials.xml" value="0.3671875" />
+        <entry key="app/src/main/res/layout/custom_map_dialog.xml" value="0.3614583333333333" />
         <entry key="app/src/main/res/layout/display_detail.xml" value="0.3541666666666667" />
         <entry key="app/src/main/res/layout/fragment_booking.xml" value="0.3671875" />
+        <entry key="app/src/main/res/layout/fragment_cart.xml" value="0.3614583333333333" />
+        <entry key="app/src/main/res/layout/fragment_detail.xml" value="0.3614583333333333" />
+        <entry key="app/src/main/res/layout/fragment_favorites.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.3541666666666667" />
         <entry key="app/src/main/res/layout/fragment_map.xml" value="0.3541666666666667" />
         <entry key="app/src/main/res/layout/fragment_mechanic_shops.xml" value="0.3541666666666667" />
         <entry key="app/src/main/res/layout/fragment_notification.xml" value="0.3671875" />
         <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.3671875" />
+        <entry key="app/src/main/res/layout/fragment_recent.xml" value="0.18055555555555555" />
         <entry key="app/src/main/res/layout/fragment_register_shop.xml" value="0.3541666666666667" />
         <entry key="app/src/main/res/layout/fragment_schedule.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_shops.xml" value="0.3671875" />
@@ -36,8 +43,10 @@
         <entry key="app/src/main/res/layout/header_layout.xml" value="0.3671875" />
         <entry key="app/src/main/res/layout/notification_item.xml" value="0.3541666666666667" />
         <entry key="app/src/main/res/layout/product_item.xml" value="0.3541666666666667" />
+        <entry key="app/src/main/res/layout/register_dialog_fragment.xml" value="0.3614583333333333" />
         <entry key="app/src/main/res/layout/schedule_item.xml" value="0.3541666666666667" />
         <entry key="app/src/main/res/layout/shop_item.xml" value="0.3541666666666667" />
+        <entry key="app/src/main/res/menu/cart_menu.xml" value="0.3614583333333333" />
         <entry key="app/src/main/res/menu/drawer_menu.xml" value="0.3541666666666667" />
         <entry key="app/src/main/res/menu/map_view_mechanic_menu.xml" value="0.3671875" />
         <entry key="app/src/main/res/menu/map_view_menu.xml" value="0.3671875" />

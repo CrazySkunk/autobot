@@ -1,23 +1,24 @@
 package com.example.autobot1.activities.landing.viewmodels;
 
 import android.app.Application;
+import android.util.Log;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.autobot1.models.ShopItem;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MechanicShopsViewModel extends AndroidViewModel {
-    ArrayList<ShopItem> shops;
+    private static final String TAG = "MechanicShopsViewModel";
+   List<ShopItem> shops;
     MutableLiveData<List<ShopItem>> mShops;
 
     public MechanicShopsViewModel(Application application) {
@@ -27,20 +28,21 @@ public class MechanicShopsViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<List<ShopItem>> getShops() {
-        FirebaseFirestore.getInstance().collection("shops")
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+        FirebaseDatabase.getInstance().getReference("shops")
+                .addValueEventListener(new ValueEventListener() {
                     @Override
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                        assert value != null;
-                        if (value.isEmpty()) {
-                            shops.add(null);
-                        } else {
-                            for (DocumentSnapshot qs : value.getDocuments()) {
-                                ShopItem item = qs.toObject(ShopItem.class);
-                                shops.add(item);
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot ds:snapshot.getChildren()){
+                            ShopItem shopItem = ds.getValue(ShopItem.class);
+                            if (shopItem!=null){
+                                shops.add(shopItem);
                             }
                         }
+                    }
 
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.i(TAG, "onCancelled: error -> "+error.getMessage());
                     }
                 });
         mShops.setValue(shops);

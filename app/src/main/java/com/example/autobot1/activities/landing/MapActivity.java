@@ -12,9 +12,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import com.example.autobot1.R;
 import com.example.autobot1.activities.landing.frags.MapFragment;
+import com.example.autobot1.activities.landing.viewmodels.MechanicShopsViewModel;
 import com.example.autobot1.activities.mechanics.frags.MechanicShopsFragment;
 import com.example.autobot1.activities.mechanics.frags.ScheduleFragment;
 import com.example.autobot1.activities.landing.frags.SpecificShopFragment;
@@ -25,6 +30,7 @@ public class MapActivity extends AppCompatActivity implements NavigationView.OnN
     protected ActionBarDrawerToggle actionBarDrawerToggle;
     protected DrawerLayout drawerLayout;
     protected Toolbar toolbar;
+    private AppBarConfiguration appBarConfiguration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +50,7 @@ public class MapActivity extends AppCompatActivity implements NavigationView.OnN
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_opened, R.string.drawer_closed);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
+        NavController navigation = Navigation.findNavController(this,R.id.frame_layout);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
