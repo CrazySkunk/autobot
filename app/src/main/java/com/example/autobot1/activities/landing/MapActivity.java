@@ -51,6 +51,7 @@ public class MapActivity extends AppCompatActivity implements NavigationView.OnN
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
         NavController navigation = Navigation.findNavController(this,R.id.frame_layout);
+        NavigationUI.setupActionBarWithNavController(this,navigation,appBarConfiguration);
         navigationView.setNavigationItemSelectedListener(this);
     }
 

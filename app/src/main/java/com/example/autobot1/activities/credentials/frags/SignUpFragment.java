@@ -2,6 +2,7 @@ package com.example.autobot1.activities.credentials.frags;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -44,10 +45,15 @@ public class SignUpFragment extends Fragment {
     private FragmentSignUpBinding binding;
     private Animation animation;
     private Uri imageUri;
+    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        progressDialog = new ProgressDialog(requireContext());
+        progressDialog.setTitle("Autobot");
+        progressDialog.setMessage("Please wait....");
+        progressDialog.setCancelable(false);
         animation = AnimationUtils.loadAnimation(requireContext(), R.anim.explosion_animation);
         animation.setDuration(500);
         animation.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -81,6 +87,7 @@ public class SignUpFragment extends Fragment {
             }
         });
         binding.signUpButton.setOnClickListener(signUpBtn -> {
+            progressDialog.show();
             String accountType;
             String name = Objects.requireNonNull(binding.nameInputEt.getText()).toString().trim();
             String email = Objects.requireNonNull(binding.emailInputEt.getText()).toString().trim();
@@ -93,24 +100,33 @@ public class SignUpFragment extends Fragment {
                 accountType = "Client";
             }
             if (name.isEmpty()) {
+                progressDialog.dismiss();
                 binding.nameInputEt.setError("Cannot be empty");
             } else {
                 if (email.isEmpty()) {
+                    progressDialog.dismiss();
                     binding.emailInputLayout.setError("Cannot be empty");
                 } else {
+                    progressDialog.dismiss();
                     if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        progressDialog.dismiss();
                         binding.emailInputLayout.setError("Invalid email address");
                     } else {
                         if (phoneNo.isEmpty()) {
+                            progressDialog.dismiss();
                             binding.phoneInputLayout.setError("Cannot be empty");
                         } else {
+                            progressDialog.dismiss();
                             if (Patterns.PHONE.matcher(phoneNo).matches()) {
+                                progressDialog.dismiss();
                                 binding.phoneInputLayout.setError("Invalid phone number");
                             } else {
                                 if (password.isEmpty()) {
+                                    progressDialog.dismiss();
                                     binding.passwordInputEt.setError("Cannot be empty");
                                 } else {
                                     if (password.length() < 8) {
+                                        progressDialog.dismiss();
                                         binding.passwordInputEt.setError("Try 8 character password");
                                     } else {
                                         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
@@ -135,10 +151,11 @@ public class SignUpFragment extends Fragment {
         return requireActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
     }
 
-    private void addImageToStorage(Uri imageUri, String name, String email, String phoneNo,String accountType) {
+    private void addImageToStorage(Uri imageUri, String name, String email, String phoneNo, String accountType) {
         StorageReference reference = FirebaseStorage.getInstance().getReference("user-images/" + FirebaseAuth.getInstance().getUid());
         reference.putFile(imageUri)
                 .addOnSuccessListener(taskSnapshot -> {
+                    progressDialog.setMessage("Almost there....");
                     String downloadUrl = reference.getDownloadUrl().toString();
                     addUserToDb(name, email, downloadUrl, phoneNo, accountType);
                 });
@@ -174,9 +191,13 @@ public class SignUpFragment extends Fragment {
                 .add(user)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        progressDialog.dismiss();
                         requireContext().startActivity(new Intent(requireContext(), MapActivity.class));
                     }
-                }).addOnFailureListener(e -> Toast.makeText(requireContext(), "Something went wrong try again", Toast.LENGTH_SHORT).show());
+                }).addOnFailureListener(e -> {
+                    progressDialog.dismiss();
+            Toast.makeText(requireContext(), "Something went wrong try again", Toast.LENGTH_SHORT).show();
+        });
     }
 
     @Override
