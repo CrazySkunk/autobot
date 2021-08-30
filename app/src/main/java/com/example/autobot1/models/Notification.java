@@ -1,15 +1,28 @@
 package com.example.autobot1.models;
 
-import java.util.Date;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+@Entity(tableName = "Notification_table")
 public class Notification {
+    @PrimaryKey(autoGenerate = true)
+    private int id;
     private String title,description,date,time;
 
-    public Notification(String title, String description, String date, String time) {
+    public Notification(int id,String title, String description, String date, String time) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.date = date;
         this.time = time;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {
