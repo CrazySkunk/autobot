@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.autobot1.R;
+import com.example.autobot1.activities.credentials.CredentialsActivity;
 import com.example.autobot1.activities.credentials.RegisterPage;
 import com.example.autobot1.activities.landing.MapActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,7 +45,7 @@ public class SplashScreen extends AppCompatActivity {
         int SPLASH_SCREEN = 4000;
         new Handler().postDelayed(() -> {
             if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-                startActivity(new Intent(SplashScreen.this, RegisterPage.class));
+                startActivity(new Intent(SplashScreen.this, CredentialsActivity.class));
             } else {
                 Intent intent = new Intent(SplashScreen.this, MapActivity.class);
                 startActivity(intent);

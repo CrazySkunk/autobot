@@ -27,6 +27,11 @@ import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.directions.route.AbstractRouting;
+import com.directions.route.Route;
+import com.directions.route.RouteException;
+import com.directions.route.Routing;
+import com.directions.route.RoutingListener;
 import com.example.autobot1.R;
 import com.example.autobot1.activities.credentials.CredentialsActivity;
 import com.example.autobot1.activities.landing.viewmodels.MechanicShopsViewModel;
@@ -36,13 +41,17 @@ import com.example.autobot1.models.ShopItem;
 import com.example.autobot1.models.User;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -54,7 +63,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClickListener {
+public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClickListener, RoutingListener {
 
     private static final String LATITUDE = "latitude";
     private static final String LONGITUDE = "longitude";
@@ -63,13 +72,19 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
     private SupportMapFragment fragment;
     protected MechanicShopsViewModel viewModel;
     private List<ShopItem> shops;
+    private GoogleMap map;
     private double latitude;
     private double longitude;
     private double mLatitude;
     private double mLongitude;
+    private LatLng start;
+    private LatLng end;
+    private View view;
     private String number;
     private GeoApiContext geoApiContext;
     private Request booking;
+    private List<Polyline> polylines = null;
+
 
     public MapFragment() {
         // Required empty public constructor
@@ -99,13 +114,15 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_map, container, false);
+        view = inflater.inflate(R.layout.fragment_map, container, false);
         fragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.google_map);
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             @SuppressLint("MissingPermission") Task<Location> task = client.getLastLocation();
             task.addOnSuccessListener(location -> {
                 if (location != null) {
                     fragment.getMapAsync(googleMap -> {
+                        map = googleMap;
+                        start = new LatLng(location.getLatitude(), location.getLongitude());
                         if (booking == null) {
                             getTypeOfUser(FirebaseAuth.getInstance().getUid(), googleMap, location);
                         } else {
@@ -368,6 +385,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
                 if (location != null) {
                     fragment.getMapAsync(googleMap -> {
                         LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
+                        start = pos;
                         Log.i(TAG, "onMapReady: lat:" + location.getLatitude() + " long:" + location.getLongitude());
                         MarkerOptions options = new MarkerOptions();
                         options.position(pos);
@@ -375,7 +393,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
                         options.snippet("Iam here");
                         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 10));
                         googleMap.addMarker(options);
-                        getTypeOfUser(FirebaseAuth.getInstance().getUid(), googleMap,location);
+                        getTypeOfUser(FirebaseAuth.getInstance().getUid(), googleMap, location);
                     });
                 }
             });
@@ -386,21 +404,21 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
         this.booking = booking;
     }
 
-    private void pinPoint(Request booking,Location location) {
+    private void pinPoint(Request booking, Location location) {
         fragment.getMapAsync(googleMap -> {
-            LatLng me = new LatLng(location.getLatitude(), location.getLongitude());
-            LatLng him = new LatLng(booking.getLocation().latitude, booking.getLocation().longitude);
+            start = new LatLng(location.getLatitude(), location.getLongitude());
+            end = new LatLng(booking.getLocation().latitude, booking.getLocation().longitude);
             Log.i(TAG, "onMapReady: lat:" + location.getLatitude() + " long:" + location.getLongitude());
             MarkerOptions options = new MarkerOptions();
-            options.position(me);
+            options.position(start);
             options.title("My position");
             options.snippet("Iam here");
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(me, 8));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(start, 8));
             MarkerOptions options1 = new MarkerOptions();
-            options1.position(me);
+            options1.position(end);
             options1.title("Client");
             options1.snippet("They are here");
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(me, 8));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(end, 8));
             googleMap.addMarker(options);
             googleMap.addMarker(options1);
             getRoutes();
@@ -432,7 +450,9 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
 
             });
             binding.mapDialogDirectionBtn.setOnClickListener(v -> {
-
+                shops.forEach(shopItem -> {
+                    findRoutes(start, end);
+                });
             });
             AlertDialog.Builder builder = new AlertDialog.Builder(requireContext())
                     .setView(view)
@@ -440,5 +460,89 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
         }
+    }
+
+    public void findRoutes(LatLng Start, LatLng End) {
+        if (Start == null || End == null) {
+            Toast.makeText(requireContext(), "Unable to get location", Toast.LENGTH_LONG).show();
+        } else {
+
+            Routing routing = new Routing.Builder()
+                    .travelMode(AbstractRouting.TravelMode.DRIVING)
+                    .withListener(this)
+                    .alternativeRoutes(true)
+                    .waypoints(Start, End)
+                    .key("Your Api Key")  //also define your api key here.
+                    .build();
+            routing.execute();
+        }
+    }
+
+    //Routing call back functions.
+    @Override
+    public void onRoutingFailure(RouteException e) {
+        View parentLayout = view.findViewById(R.id.parent_layout);
+        Snackbar snackbar = Snackbar.make(parentLayout, e.toString(), Snackbar.LENGTH_LONG);
+        snackbar.show();
+        findRoutes(start, end);
+    }
+
+
+    @Override
+    public void onRoutingStart() {
+
+    }
+
+    @Override
+    public void onRoutingSuccess(ArrayList<Route> arrayList, int shortestRouteIndex) {
+
+        CameraUpdate center = CameraUpdateFactory.newLatLng(start);
+        CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
+        if (polylines != null) {
+            polylines.clear();
+        }
+        PolylineOptions polyOptions = new PolylineOptions();
+        LatLng polylineStartLatLng = null;
+        LatLng polylineEndLatLng = null;
+
+        polylines = new ArrayList<>();
+        //add route(s) to the map using polyline
+        for (int i = 0; i < arrayList.size(); i++) {
+
+            if (i == shortestRouteIndex) {
+                polyOptions.color(getResources().getColor(R.color.colorPrimary));
+                polyOptions.width(7);
+                polyOptions.addAll(arrayList.get(shortestRouteIndex).getPoints());
+                Polyline polyline = map.addPolyline(polyOptions);
+                polylineStartLatLng = polyline.getPoints().get(0);
+                int k = polyline.getPoints().size();
+                polylineEndLatLng = polyline.getPoints().get(k - 1);
+                polylines.add(polyline);
+
+            } else {
+                Toast.makeText(requireContext(), "Rerouting...", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+
+        //Add Marker on route starting position
+        MarkerOptions startMarker = new MarkerOptions();
+        startMarker.position(polylineStartLatLng);
+        startMarker.title("My Location");
+        map.addMarker(startMarker);
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(start, 10));
+
+        //Add Marker on route ending position
+        MarkerOptions endMarker = new MarkerOptions();
+        endMarker.position(polylineEndLatLng);
+        endMarker.title("Destination");
+        map.addMarker(endMarker);
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(start, 10));
+
+    }
+
+    @Override
+    public void onRoutingCancelled() {
+        findRoutes(start, end);
     }
 }
