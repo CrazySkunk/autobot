@@ -47,7 +47,8 @@
     <string name="no_shops_found">No shops found</string>
     <string name="enter_shop_location">Enter shop location</string>
     <string name="submit">Submit</string>
-]    <string name="enter_shop_name">Enter shop name</string>
+    ]
+    <string name="enter_shop_name">Enter shop name</string>
     <string name="username">Enter Username</string>
     <string name="enter_email_address">Enter email address</string>
     <string name="password">Enter Password</string>
@@ -59,5 +60,13 @@
     <string name="description">This is where the description about the product goes and all other information abotu the product</string>
     <string name="price">Price</string>
     <string name="location">Location</string>
+    <string name="image">image</string>
+    <string name="proceed_to_cart">Proceed to cart</string>
+    <string name="add_to_cart">Add to cart</string>
+    <string name="quantity">Quantity</string>
+    <string name="total">Total</string>
+    <string name="no_notifications_created_yet">No notifications created yet</string>
+    <string name="enter_shop_address">Enter shop address</string>
+    <string name="delete_all">Delete all</string>
 
 </resources>

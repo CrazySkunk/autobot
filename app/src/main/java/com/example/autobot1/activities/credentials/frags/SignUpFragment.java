@@ -57,7 +57,6 @@ public class SignUpFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentSignUpBinding.inflate(inflater, container, false);
         return binding.getRoot();
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

@@ -40,17 +40,22 @@
             android:id="@+id/bookings_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:icon="@drawable/books" />
+            android:icon="@drawable/request" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/booking_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:icon="@drawable/schedule" />
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/map_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/map" />
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.viewpager.widget.ViewPager
-        android:id="@+id/mechanics_nav_controller"
+        android:id="@+id/mechanics_view_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"

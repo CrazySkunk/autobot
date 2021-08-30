@@ -3,21 +3,41 @@ package com.example.autobot1.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class ShopItem implements Parcelable {
-    private String title,location, description,imageUrl;
+import androidx.room.Entity;
 
-    public ShopItem(String title, String location, String description,String imageUrl) {
+import com.google.type.LatLng;
+
+public class ShopItem implements Parcelable {
+    private String title, description,imageUrl,contact;
+    private LatLng location;
+
+    public ShopItem(String title, LatLng location, String description,String imageUrl,String contact) {
         this.title = title;
         this.location = location;
         this.description = description;
         this.imageUrl = imageUrl;
+        this.contact = contact;
     }
+
 
     protected ShopItem(Parcel in) {
         title = in.readString();
-        location = in.readString();
         description = in.readString();
         imageUrl = in.readString();
+        contact = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(description);
+        dest.writeString(imageUrl);
+        dest.writeString(contact);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<ShopItem> CREATOR = new Creator<ShopItem>() {
@@ -40,11 +60,11 @@ public class ShopItem implements Parcelable {
         this.title = title;
     }
 
-    public String getLocation() {
+    public LatLng getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(LatLng location) {
         this.location = location;
     }
 
@@ -64,16 +84,11 @@ public class ShopItem implements Parcelable {
         this.imageUrl = imageUrl;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getContact() {
+        return contact;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(location);
-        dest.writeString(description);
-        dest.writeString(imageUrl);
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 }

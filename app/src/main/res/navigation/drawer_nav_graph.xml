@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_nav_graph"
+    app:startDestination="@layout/fragment_map">
+    <fragment
+        android:id="@+id/map_frag"
+        android:name="com.example.autobot1.activities.landing.frags.MapFragment"
+        android:label="Map"
+        tools:layout="@layout/fragment_map">
+        <action android:id="@+id/action" />
+    </fragment>
+    <fragment
+        android:id="@+id/recent_frag"
+        android:name="com.example.autobot1.activities.landing.frags.RecentFragment"
+        android:label="Recent"
+        tools:layout="@layout/fragment_recent">
+        <action android:id="@+id/recent_action" />
+    </fragment>
+    <fragment
+        android:id="@+id/bookings_frag"
+        android:name="com.example.autobot1.activities.landing.frags.BookingFragment"
+        android:label="Bookings"
+        tools:layout="@layout/fragment_recent">
+        <action android:id="@+id/recent_action" />
+    </fragment>
+    <fragment
+        android:id="@+id/favorites_frag"
+        android:name="com.example.autobot1.activities.landing.frags.FavoritesFragment"
+        android:label="Favorites"
+        tools:layout="@layout/fragment_recent">
+        <action android:id="@+id/recent_action" />
+    </fragment>
+    <fragment
+        android:id="@+id/shops_frag"
+        android:name="com.example.autobot1.activities.landing.frags.RecentFragment"
+        android:label="Shops"
+        tools:layout="@layout/fragment_mechanic_shops">
+        <action android:id="@+id/recent_action" />
+    </fragment>
+
+</navigation>

@@ -3,6 +3,8 @@ package com.example.autobot1.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.room.Entity;
+
 public class ProductItem implements Parcelable {
     private String title,description,price,imageUrl;
 

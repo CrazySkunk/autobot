@@ -4,87 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    tools:context=".activities.mechanics.frags.BookingFragment">
+    tools:context=".activities.landing.frags.BookingFragment">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/textBooking"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="10dp">
+        android:fontFamily="@font/antic"
+        android:text="Mechanic Requests"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="25sp" />
 
-        <TextView
-            android:id="@+id/textBooking"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/antic"
-            android:text="Mechanic Schedule"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="30sp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textBooking"
-            android:layout_marginTop="8dp"
-            android:orientation="vertical">
-
-            <ListView
-                android:id="@+id/lv_schedules"
-                android:layout_width="390dp"
-                android:layout_height="400dp"
-                android:background="@drawable/et_bg" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:fontFamily="@font/antic"
-                android:text="Input Pickup/Meetup Time"
-                android:textColor="#000000"
-                android:textSize="25sp" />
-
-            <RelativeLayout
-                android:id="@+id/contactlinear2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:id="@+id/pick_up_time_et"
-                    android:layout_width="150dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="35dp"
-                    android:background="@drawable/et_bg"
-                    android:inputType="datetime"
-                    android:textAllCaps="false"
-                    android:textColor="#000000" />
-
-                <EditText
-                    android:id="@+id/meet_up_time_et"
-                    android:layout_width="150dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="35dp"
-                    android:background="@drawable/et_bg"
-                    android:inputType="datetime"
-                    android:textAllCaps="false"
-                    android:textColor="#000000" />
-
-                <Button
-                    android:layout_width="150dp"
-                    android:id="@+id/confirm_button"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="90dp"
-                    android:background="@drawable/et_bg"
-                    android:text="Confirm"
-                    android:textAllCaps="false"
-                    android:textColor="#000000" />
-
-            </RelativeLayout>
-        </LinearLayout>
-    </RelativeLayout>
+    <ListView
+        android:id="@+id/lv_schedules"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/notification_item"
+        android:layout_below="@+id/textBooking"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/et_bg" />
 
 </RelativeLayout>
