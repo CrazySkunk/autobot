@@ -49,7 +49,7 @@ public class SpecificShopFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentSpecificShopBinding.inflate(inflater, container, false);
         viewModel.getShopProducts(name).observe(getViewLifecycleOwner(),productItemList -> {
-            ProductAdapter adapter = new ProductAdapter(productItemList);
+            ProductAdapter adapter = new ProductAdapter(requireContext(),productItemList);
             binding.shopRecycler.hasFixedSize();
             binding.shopRecycler.setClipToPadding(false);
             binding.shopRecycler.setClipToPadding(false);

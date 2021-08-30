@@ -1,5 +1,6 @@
 package com.example.autobot1.activities.mechanics;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -114,7 +115,8 @@ public class MechanicsActivity extends AppCompatActivity implements BookingFragm
                     .replace(R.id.container_dialog, new RegisterShopFragment())
                     .commit();
             alertDialog.show();
-
+        }else if(item.getItemId()==R.id.add_product_to_shop){
+            startActivity(new Intent(this,AddProductActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }

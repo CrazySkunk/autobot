@@ -29,5 +29,4 @@ public interface CartDao {
     @Query("DELETE FROM `Cart-Products`")
     public void deleteAllCartProducts();
 
-
 }

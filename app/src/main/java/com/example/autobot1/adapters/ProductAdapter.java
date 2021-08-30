@@ -1,5 +1,6 @@
 package com.example.autobot1.adapters;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,9 +8,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.autobot1.R;
+import com.example.autobot1.activities.landing.viewmodels.FavShopViewModel;
 import com.example.autobot1.adapters.ProductAdapter.ProductViewHolder;
 import com.example.autobot1.models.ProductItem;
 import com.squareup.picasso.Picasso;
@@ -19,8 +23,10 @@ import java.util.List;
 public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder> {
     private List<ProductItem> productItemList;
     private OnItemClick listener;
+    private Context context;
 
-    public ProductAdapter(List<ProductItem> productItemList) {
+    public ProductAdapter(Context context,List<ProductItem> productItemList) {
+        this.context = context;
         this.productItemList = productItemList;
     }
 
@@ -55,7 +61,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder> {
 
     static class ProductViewHolder extends RecyclerView.ViewHolder {
         private TextView title, description, price;
-        private ImageView productImage;
+        private ImageView productImage,favIcon;
 
         public ProductViewHolder(View itemView,OnItemClick listener) {
             super(itemView);

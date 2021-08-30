@@ -4,35 +4,45 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import com.google.type.LatLng;
 
-public class ShopItem implements Parcelable {
+@Entity(tableName = "Favorite_shops")
+public class ShopItemFav implements Parcelable {
+    @PrimaryKey(autoGenerate = true)
+    int id;
     private String title, description,imageUrl,contact;
     private LatLng location;
+    private boolean isFav = false;
 
-    public ShopItem(String title, LatLng location, String description,String imageUrl,String contact) {
+    public ShopItemFav(int uid,String title, LatLng location, String description, String imageUrl, String contact,boolean isFav) {
+        this.id = uid;
         this.title = title;
         this.location = location;
         this.description = description;
         this.imageUrl = imageUrl;
         this.contact = contact;
+        this.isFav = isFav;
     }
 
 
-    protected ShopItem(Parcel in) {
+    protected ShopItemFav(Parcel in) {
         title = in.readString();
         description = in.readString();
         imageUrl = in.readString();
         contact = in.readString();
     }
 
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(title);
         dest.writeString(description);
         dest.writeString(imageUrl);
         dest.writeString(contact);
+        dest.writeByte((byte) (isFav ? 1 : 0));
     }
 
     @Override
@@ -40,15 +50,15 @@ public class ShopItem implements Parcelable {
         return 0;
     }
 
-    public static final Creator<ShopItem> CREATOR = new Creator<ShopItem>() {
+    public static final Creator<ShopItemFav> CREATOR = new Creator<ShopItemFav>() {
         @Override
-        public ShopItem createFromParcel(Parcel in) {
-            return new ShopItem(in);
+        public ShopItemFav createFromParcel(Parcel in) {
+            return new ShopItemFav(in);
         }
 
         @Override
-        public ShopItem[] newArray(int size) {
-            return new ShopItem[size];
+        public ShopItemFav[] newArray(int size) {
+            return new ShopItemFav[size];
         }
     };
 
@@ -90,5 +100,21 @@ public class ShopItem implements Parcelable {
 
     public void setContact(String contact) {
         this.contact = contact;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public boolean isFav() {
+        return isFav;
+    }
+
+    public void setFav(boolean fav) {
+        isFav = fav;
     }
 }

@@ -19,6 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AutoBot1">
         <activity
+            android:name=".activities.mechanics.AddProductActivity"
+            android:exported="true" />
+        <activity
             android:name=".activities.mechanics.MechanicsActivity"
             android:exported="true" />
         <activity
