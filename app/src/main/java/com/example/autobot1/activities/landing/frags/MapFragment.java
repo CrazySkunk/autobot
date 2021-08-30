@@ -472,7 +472,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
                     .withListener(this)
                     .alternativeRoutes(true)
                     .waypoints(Start, End)
-                    .key("Your Api Key")  //also define your api key here.
+                    .key(getResources().getString(R.string.google_maps_key))
                     .build();
             routing.execute();
         }
