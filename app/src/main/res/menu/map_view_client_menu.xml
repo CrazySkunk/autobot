@@ -13,19 +13,12 @@
         android:title="Account" />
     <item
         android:id="@+id/notification"
-        android:icon="@drawable/notifications"
+        app:showAsAction="always"
+        android:icon="@drawable/shopping_cart"
         android:title="Notification" />
     <item
-        android:id="@+id/vehicle"
-        android:icon="@drawable/directions_car"
-        android:title="Vehicle" />
-    <item
-        android:id="@+id/shops"
-        android:icon="@drawable/add_business"
-        android:title="My shops" />
-    <item
         android:id="@+id/logout"
-        android:icon="@drawable/logout"
+        android:icon="@drawable/exit_to_app"
         android:title="Logout" />
     <item
         android:id="@+id/purchases"

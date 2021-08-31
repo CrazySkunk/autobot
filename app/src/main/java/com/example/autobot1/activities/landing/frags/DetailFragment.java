@@ -93,4 +93,10 @@ public class DetailFragment extends Fragment {
         binding.quantityDetailTv.setText(q);
         binding.totalDetailTv.setText(total);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        binding = null;
+    }
 }

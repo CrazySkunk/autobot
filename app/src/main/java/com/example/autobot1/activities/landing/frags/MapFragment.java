@@ -33,9 +33,9 @@ import com.directions.route.RouteException;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
 import com.example.autobot1.R;
+import com.example.autobot1.activities.contact.Contact;
 import com.example.autobot1.activities.credentials.CredentialsActivity;
 import com.example.autobot1.activities.landing.viewmodels.MechanicShopsViewModel;
-import com.example.autobot1.databinding.CustomMapDialogBinding;
 import com.example.autobot1.models.Request;
 import com.example.autobot1.models.ShopItem;
 import com.example.autobot1.models.User;
@@ -46,7 +46,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -61,12 +60,12 @@ import com.google.maps.GeoApiContext;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClickListener, RoutingListener {
+public class MapFragment extends Fragment implements RoutingListener {
 
     private static final String LATITUDE = "latitude";
     private static final String LONGITUDE = "longitude";
+    private static final String UID = "uid";
     public static final String TAG = "Map fragment";
     private FusedLocationProviderClient client;
     private SupportMapFragment fragment;
@@ -75,6 +74,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
     private GoogleMap map;
     private double latitude;
     private double longitude;
+    private String uid;
     private double mLatitude;
     private double mLongitude;
     private LatLng start;
@@ -90,11 +90,12 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
         // Required empty public constructor
     }
 
-    public static MapFragment newInstance(String latitude, String longitude) {
+    public static MapFragment newInstance(String latitude, String longitude, String uid) {
         MapFragment fragment = new MapFragment();
         Bundle args = new Bundle();
         args.putString(LATITUDE, latitude);
         args.putString(LONGITUDE, longitude);
+        args.putString(UID, uid);
         fragment.setArguments(args);
         return fragment;
     }
@@ -108,6 +109,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
         if (getArguments() != null) {
             latitude = getArguments().getDouble(LATITUDE);
             longitude = getArguments().getDouble(LONGITUDE);
+            uid = getArguments().getString(UID);
         }
     }
 
@@ -123,10 +125,14 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
                     fragment.getMapAsync(googleMap -> {
                         map = googleMap;
                         start = new LatLng(location.getLatitude(), location.getLongitude());
+                        MarkerOptions markerOptions = new MarkerOptions()
+                                .position(start)
+                                .title("My position")
+                                .snippet("Iam here");
+                        googleMap.addMarker(markerOptions);
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(start, 10));
                         if (booking == null) {
                             getTypeOfUser(FirebaseAuth.getInstance().getUid(), googleMap, location);
-                        } else {
-                            pinPoint(booking, location);
                         }
                     });
                     if (geoApiContext == null) {
@@ -152,7 +158,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
                         snapshot.getChildren().forEach(user -> {
                             User user1 = user.getValue(User.class);
                             if (user1 != null)
-                                if (user1.getUid().equals(uid) && user1.getAccountTYpe().equals("Mechanic")) {
+                                if (user1.getUid().equals(uid) && user1.getAccountType().equals("Mechanic")) {
                                     populateMechanicMap(user1.getUid(), googleMap, location);
                                 } else {
                                     populateUserMap(googleMap, location);
@@ -205,7 +211,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
                                     intent.putExtra("number", shop1.getContact());
                                     startActivity(intent);
                                 });
-                                getDirections.setOnClickListener(view13 -> getRoutes());
+                                getDirections.setOnClickListener(view13 -> findRoutes(start, end));
                                 builder.setCancelable(true);
                                 builder.setView(v);
                                 AlertDialog alertDialog = builder.create();
@@ -228,7 +234,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
         options.snippet("Iam here");
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 10));
         googleMap.addMarker(options);
-        googleMap.setOnInfoWindowClickListener(this);
     }
 
     private List<Request> getBookings(String uid) {
@@ -267,38 +272,34 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
                             ))
                             .title(shop.getTitle())
                             .snippet(shop.getDescription().substring(0, 10)));
-                    googleMap.setOnInfoWindowClickListener(marker -> {
-                        LatLng pos = marker.getPosition();
-                        shops.forEach(shop1 -> {
-                            if (shop1.getLocation().equals(pos)) {
-                                View v = LayoutInflater.from(requireContext()).inflate(R.layout.custom_map_dialog, null, false);
-                                AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-                                TextView title = v.findViewById(R.id.shop_title_text_view);
-                                TextView description = v.findViewById(R.id.map_dialog_description_tv);
-                                Button email = v.findViewById(R.id.map_dialog_email_btn);
-                                Button call = v.findViewById(R.id.map_dialog_call_btn);
-                                Button getDirections = v.findViewById(R.id.map_dialog_direction_btn);
-                                getDirections.setVisibility(View.GONE);
-                                title.setText(shop1.getTitle());
-                                description.setText(shop1.getDescription());
-                                email.setOnClickListener(view1 -> {
-                                    Intent intent = new Intent(Intent.CATEGORY_APP_EMAIL);
-                                    intent.putExtra("email_address", shop1.getContact());
-                                    startActivity(intent);
-                                });
-                                call.setOnClickListener(view12 -> {
-                                    Intent intent = new Intent(Intent.ACTION_CALL);
-                                    intent.putExtra("number", shop1.getContact());
-                                    startActivity(intent);
-                                });
-                                getDirections.setOnClickListener(view13 -> getRoutes());
-                                builder.setCancelable(true);
-                                builder.setView(v);
-                                AlertDialog alertDialog = builder.create();
-                                alertDialog.show();
-                            }
-                        });
-                    });
+                    googleMap.setOnMapClickListener(
+                            latLng -> shops.forEach(shop1 -> {
+                                if (new LatLng(shop1.getLocation().getLatitude(), shop.getLocation().getLongitude()).equals(latLng)) {
+                                    View v = LayoutInflater.from(requireContext()).inflate(R.layout.custom_map_dialog, null, false);
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                                    TextView title = v.findViewById(R.id.shop_title_text_view);
+                                    TextView description = v.findViewById(R.id.map_dialog_description_tv);
+                                    Button email = v.findViewById(R.id.map_dialog_email_btn);
+                                    Button call = v.findViewById(R.id.map_dialog_call_btn);
+                                    Button getDirections = v.findViewById(R.id.map_dialog_direction_btn);
+                                    getDirections.setVisibility(View.GONE);
+                                    title.setText(shop1.getTitle());
+                                    description.setText(shop1.getDescription());
+                                    email.setOnClickListener(view1 -> {
+                                        requireActivity().startActivity(new Intent(requireContext(), Contact.class).putExtra("shop", shop1));
+                                    });
+                                    call.setOnClickListener(view12 -> {
+                                        Intent intent = new Intent(Intent.ACTION_CALL);
+                                        intent.putExtra("number", shop1.getContact());
+                                        startActivity(intent);
+                                    });
+                                    getDirections.setOnClickListener(view13 -> findRoutes(new LatLng(location.getLatitude(), location.getLongitude()), new LatLng(shop1.getLocation().getLatitude(), shop1.getLocation().getLongitude())));
+                                    builder.setCancelable(true);
+                                    builder.setView(v);
+                                    AlertDialog alertDialog = builder.create();
+                                    alertDialog.show();
+                                }
+                            }));
                 }
             }
         }
@@ -314,12 +315,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
         options.snippet("Iam here");
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 10));
         googleMap.addMarker(options);
-        googleMap.setOnInfoWindowClickListener(this);
     }
 
-    private void getRoutes() {
-        //todo: fetch routes from directions api
-    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -404,63 +401,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
         this.booking = booking;
     }
 
-    private void pinPoint(Request booking, Location location) {
-        fragment.getMapAsync(googleMap -> {
-            start = new LatLng(location.getLatitude(), location.getLongitude());
-            end = new LatLng(booking.getLocation().latitude, booking.getLocation().longitude);
-            Log.i(TAG, "onMapReady: lat:" + location.getLatitude() + " long:" + location.getLongitude());
-            MarkerOptions options = new MarkerOptions();
-            options.position(start);
-            options.title("My position");
-            options.snippet("Iam here");
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(start, 8));
-            MarkerOptions options1 = new MarkerOptions();
-            options1.position(end);
-            options1.title("Client");
-            options1.snippet("They are here");
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(end, 8));
-            googleMap.addMarker(options);
-            googleMap.addMarker(options1);
-            getRoutes();
-        });
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
-    public void onInfoWindowClick(@NonNull Marker marker) {
-        if (Objects.equals(marker.getSnippet(), "Iam here") && Objects.equals(marker.getTitle(), "My position")) {
-            marker.hideInfoWindow();
-        } else {
-            View view = LayoutInflater.from(requireContext()).inflate(R.layout.custom_map_dialog, null, false);
-            CustomMapDialogBinding binding = CustomMapDialogBinding.bind(view);
-            binding.mapDialogTitleTv.setText(marker.getTitle());
-            binding.mapDialogDescriptionTv.setText(marker.getSnippet());
-            binding.mapDialogEmailBtn.setOnClickListener(v -> {
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                startActivity(intent);
-            });
-            binding.mapDialogCallBtn.setOnClickListener(v -> {
-                shops.forEach(shopItem -> {
-                    if (shopItem.getTitle().equals(marker.getTitle())) {
-                        number = shopItem.getContact();
-                    }
-                });
-                Intent intent = new Intent(Intent.ACTION_CALL);
-                intent.putExtra("number", number);
-
-            });
-            binding.mapDialogDirectionBtn.setOnClickListener(v -> {
-                shops.forEach(shopItem -> {
-                    findRoutes(start, end);
-                });
-            });
-            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext())
-                    .setView(view)
-                    .setCancelable(true);
-            AlertDialog alertDialog = builder.create();
-            alertDialog.show();
-        }
-    }
 
     public void findRoutes(LatLng Start, LatLng End) {
         if (Start == null || End == null) {

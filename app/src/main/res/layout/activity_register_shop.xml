@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
 
     android:layout_height="match_parent"
-    tools:context=".activities.credentials.frags.RegisterShopFragment">
+    tools:context=".activities.mechanics.RegisterShopActivity">
 
     <EditText
         android:id="@+id/shop_name_et"

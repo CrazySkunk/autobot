@@ -6,17 +6,15 @@ import android.os.Parcelable;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.google.type.LatLng;
-
-@Entity(tableName = "Favorite_shops")
-public class ShopItemFav implements Parcelable {
+@Entity(tableName = "Recent-shops-table")
+public class RecentShopItem implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     int id;
     private String title, description,imageUrl,contact;
     private String latitude,longitude;
     private boolean isFav = false;
 
-    public ShopItemFav(int id, String title, String description, String imageUrl, String contact, String latitude, String longitude, boolean isFav) {
+    public RecentShopItem(int id, String title, String description, String imageUrl, String contact, String latitude, String longitude, boolean isFav) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -28,7 +26,7 @@ public class ShopItemFav implements Parcelable {
     }
 
 
-    protected ShopItemFav(Parcel in) {
+    protected RecentShopItem(Parcel in) {
         id = in.readInt();
         title = in.readString();
         description = in.readString();
@@ -56,15 +54,15 @@ public class ShopItemFav implements Parcelable {
         return 0;
     }
 
-    public static final Creator<ShopItemFav> CREATOR = new Creator<ShopItemFav>() {
+    public static final Creator<RecentShopItem> CREATOR = new Creator<RecentShopItem>() {
         @Override
-        public ShopItemFav createFromParcel(Parcel in) {
-            return new ShopItemFav(in);
+        public RecentShopItem createFromParcel(Parcel in) {
+            return new RecentShopItem(in);
         }
 
         @Override
-        public ShopItemFav[] newArray(int size) {
-            return new ShopItemFav[size];
+        public RecentShopItem[] newArray(int size) {
+            return new RecentShopItem[size];
         }
     };
 

@@ -45,7 +45,7 @@ public class MechanicShopsViewModel extends AndroidViewModel {
                         Log.i(TAG, "onCancelled: error -> "+error.getMessage());
                     }
                 });
-        mShops.setValue(shops);
+        mShops.postValue(shops);
         return mShops;
     }
 

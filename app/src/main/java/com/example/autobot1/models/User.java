@@ -1,15 +1,18 @@
 package com.example.autobot1.models;
 
 public class User {
-    private String uid,name,email,imageUrl,phoneNo,accountTYpe;
+    private String uid,name,email,imageUrl,phoneNo,accountType;
 
-    public User(String uid,String name, String email,String imageUrl,String phoneNo, String accountTYpe) {
+    public User(String uid,String name, String email,String imageUrl,String phoneNo, String accountType) {
         this.uid=uid;
         this.name = name;
         this.email = email;
         this.imageUrl = imageUrl;
         this.phoneNo = phoneNo;
-        this.accountTYpe = accountTYpe;
+        this.accountType = accountType;
+    }
+
+    public User() {
     }
 
     public String getName() {
@@ -52,11 +55,11 @@ public class User {
         this.phoneNo = phoneNo;
     }
 
-    public String getAccountTYpe() {
-        return accountTYpe;
+    public String getAccountType() {
+        return accountType;
     }
 
-    public void setAccountTYpe(String accountTYpe) {
-        this.accountTYpe = accountTYpe;
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
     }
 }

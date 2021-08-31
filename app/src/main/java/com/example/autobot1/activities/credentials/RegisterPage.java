@@ -101,4 +101,16 @@ public class RegisterPage extends AppCompatActivity {
                     startActivity(new Intent(this, MapActivity.class));
                 });
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(this,CredentialsActivity.class));
+        finish();
+    }
 }

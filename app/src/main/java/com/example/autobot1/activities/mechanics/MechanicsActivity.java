@@ -3,14 +3,11 @@ package com.example.autobot1.activities.mechanics;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -18,19 +15,18 @@ import androidx.core.view.MenuItemCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.autobot1.R;
-import com.example.autobot1.activities.credentials.frags.RegisterShopFragment;
+import com.example.autobot1.activities.credentials.CredentialsActivity;
 import com.example.autobot1.activities.landing.frags.BookingFragment;
 import com.example.autobot1.activities.landing.frags.MapFragment;
-import com.example.autobot1.activities.mechanics.frags.MechanicShopsFragment;
+import com.example.autobot1.activities.landing.frags.MechanicShopsFragment;
 import com.example.autobot1.activities.mechanics.frags.NotificationsFragment;
 import com.example.autobot1.activities.mechanics.frags.ScheduleFragment;
-import com.example.autobot1.activities.mechanics.models.Bookings;
 import com.example.autobot1.activities.mechanics.models.FragComponent;
 import com.example.autobot1.adapters.MechanicPageAdapter;
 import com.example.autobot1.databinding.ActivityMechanicsBinding;
 import com.example.autobot1.models.Request;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MechanicsActivity extends AppCompatActivity implements BookingFragment.SendMessage {
     private ActivityMechanicsBinding binding;
@@ -81,8 +77,8 @@ public class MechanicsActivity extends AppCompatActivity implements BookingFragm
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.map_view_mechanic_menu, menu);
-        MenuItem item = menu.findItem(R.id.search_mechanic);
+        getMenuInflater().inflate(R.menu.mechanic_shop_menu, menu);
+        MenuItem item = menu.findItem(R.id.search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
         searchView.setQueryHint("Search for client");
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -102,23 +98,15 @@ public class MechanicsActivity extends AppCompatActivity implements BookingFragm
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.register_shop) {
-            View view = LayoutInflater.from(this).inflate(R.layout.register_dialog_fragment, null, false);
-            AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                    .setTitle("Register shop")
-                    .setView(view)
-                    .setCancelable(true)
-                    .setPositiveButton("Register", (dialog, which) -> {
-                        FirebaseDatabase.getInstance().getReference().setValue(null);
-                    });
-            AlertDialog alertDialog = builder.create();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container_dialog, new RegisterShopFragment())
-                    .commit();
-            alertDialog.show();
+            startActivity(new Intent(this, RegisterShopActivity.class));
         }else if(item.getItemId()==R.id.add_product_to_shop){
             startActivity(new Intent(this,AddProductActivity.class));
+        }else if (item.getItemId()==R.id.logout){
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(this, CredentialsActivity.class));
+            finish();
         }
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     private void setUpAdapter() {
@@ -140,5 +128,11 @@ public class MechanicsActivity extends AppCompatActivity implements BookingFragm
         fragment.setBooking(booking);}else {
             Toast.makeText(this, "Internal error", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        binding = null;
     }
 }

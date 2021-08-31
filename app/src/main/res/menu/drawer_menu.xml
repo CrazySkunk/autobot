@@ -16,7 +16,7 @@
         android:title="Favourites" />
     <item
         android:id="@+id/shop_parts"
-        android:icon="@drawable/shopping_cart"
+        android:icon="@drawable/add_business"
         android:title="Shop for parts" />
     <item
         android:id="@+id/map"
