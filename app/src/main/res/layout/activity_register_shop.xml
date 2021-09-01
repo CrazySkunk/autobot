@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-
     android:layout_height="match_parent"
     tools:context=".activities.mechanics.RegisterShopActivity">
 
@@ -11,38 +10,25 @@
         android:id="@+id/shop_name_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
         android:autofillHints="shop_name"
         android:hint="@string/enter_shop_name"
         android:inputType="text"
         android:minHeight="48dp"
-        android:layout_marginEnd="20sp"
         android:layout_marginStart="20sp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="20sp"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="20dp" />
+        app:layout_constraintEnd_toEndOf="@+id/shop_iv"
+        app:layout_constraintStart_toStartOf="@+id/shop_iv"
+        app:layout_constraintTop_toBottomOf="@+id/shop_iv" />
 
-    <EditText
-        android:id="@+id/shop_location_et"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20sp"
-        android:layout_marginEnd="20sp"
-        android:autofillHints="location"
-        android:hint="@string/enter_shop_location"
-        android:inputType="text"
-        android:minHeight="48dp"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shop_name_et" />
     <EditText
         android:id="@+id/shop_address_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20sp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="20sp"
         android:autofillHints="location"
         android:hint="@string/enter_shop_address"
@@ -51,17 +37,86 @@
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shop_location_et" />
+
+    <EditText
+        android:id="@+id/shop_description_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20sp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="20sp"
+        android:autofillHints="location"
+        android:hint="Description"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shop_address_et" />
+
+    <EditText
+        android:id="@+id/shop_contact_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20sp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="20sp"
+        android:autofillHints="location"
+        android:hint="Contact"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shop_description_et" />
+
+    <EditText
+        android:id="@+id/shop_location_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20sp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="20sp"
+        android:autofillHints="location"
+        android:hint="@string/enter_shop_location"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shop_name_et" />
 
     <Button
         android:id="@+id/submit_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
         android:text="@string/submit"
-        android:layout_marginTop="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/shop_address_et"
-        app:layout_constraintStart_toStartOf="@+id/shop_address_et"
-        app:layout_constraintTop_toBottomOf="@+id/shop_address_et" />
+        app:layout_constraintEnd_toEndOf="@+id/shop_contact_et"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="@+id/shop_contact_et"
+        app:layout_constraintTop_toBottomOf="@+id/shop_contact_et" />
+
+    <ImageView
+        android:id="@+id/shop_iv"
+        android:layout_width="200dp"
+        android:layout_height="150dp"
+        android:contentDescription="@string/pic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.031"
+        app:srcCompat="@drawable/ic_twotone_image_search_24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
