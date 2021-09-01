@@ -13,7 +13,6 @@ import com.example.autobot1.R;
 import com.example.autobot1.databinding.ActivityCredentialsBinding;
 
 public class CredentialsActivity extends AppCompatActivity {
-
     private AppBarConfiguration appBarConfiguration;
 
     @Override

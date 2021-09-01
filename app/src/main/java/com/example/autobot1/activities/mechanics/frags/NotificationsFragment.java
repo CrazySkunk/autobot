@@ -61,4 +61,10 @@ public class NotificationsFragment extends Fragment {
     private void doDelete(CharSequence title) {
        //todo:perform delete
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        binding = null;
+    }
 }

@@ -3,7 +3,9 @@ package com.example.autobot1.activities.credentials.frags;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -24,14 +26,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.autobot1.R;
+import com.example.autobot1.activities.credentials.viewmodels.CredentialsViewModel;
 import com.example.autobot1.activities.landing.MapActivity;
 import com.example.autobot1.databinding.FragmentSignUpBinding;
+import com.example.autobot1.models.AccountType;
 import com.example.autobot1.models.User;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -46,13 +52,14 @@ public class SignUpFragment extends Fragment {
     private Animation animation;
     private Uri imageUri;
     private ProgressDialog progressDialog;
+    private CredentialsViewModel credentialsViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        credentialsViewModel = new ViewModelProvider(this).get(CredentialsViewModel.class);
         progressDialog = new ProgressDialog(requireContext());
-        progressDialog.setTitle("Autobot");
-        progressDialog.setMessage("Please wait....");
+        progressDialog.setMessage("Please wait...");
         progressDialog.setCancelable(false);
         animation = AnimationUtils.loadAnimation(requireContext(), R.anim.explosion_animation);
         animation.setDuration(500);
@@ -68,7 +75,6 @@ public class SignUpFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         binding.loginPageButton.setOnClickListener(loginFab -> {
             View animationView = binding.animationView;
             animationView.setVisibility(View.VISIBLE);
@@ -100,41 +106,44 @@ public class SignUpFragment extends Fragment {
                 accountType = "Client";
             }
             if (name.isEmpty()) {
-                progressDialog.dismiss();
                 binding.nameInputEt.setError("Cannot be empty");
+                progressDialog.dismiss();
             } else {
                 if (email.isEmpty()) {
-                    progressDialog.dismiss();
                     binding.emailInputLayout.setError("Cannot be empty");
-                } else {
                     progressDialog.dismiss();
+                } else {
                     if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                        progressDialog.dismiss();
                         binding.emailInputLayout.setError("Invalid email address");
+                        progressDialog.dismiss();
                     } else {
                         if (phoneNo.isEmpty()) {
-                            progressDialog.dismiss();
                             binding.phoneInputLayout.setError("Cannot be empty");
-                        } else {
                             progressDialog.dismiss();
-                            if (Patterns.PHONE.matcher(phoneNo).matches()) {
-                                progressDialog.dismiss();
+                            progressDialog.dismiss();
+                        } else {
+                            if (!Patterns.PHONE.matcher(phoneNo).matches()) {
                                 binding.phoneInputLayout.setError("Invalid phone number");
+                                progressDialog.dismiss();
                             } else {
                                 if (password.isEmpty()) {
-                                    progressDialog.dismiss();
                                     binding.passwordInputEt.setError("Cannot be empty");
+                                    progressDialog.dismiss();
                                 } else {
                                     if (password.length() < 8) {
-                                        progressDialog.dismiss();
                                         binding.passwordInputEt.setError("Try 8 character password");
+                                        progressDialog.dismiss();
                                     } else {
-                                        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
-                                                .addOnCompleteListener(task -> {
-                                                    if (task.isSuccessful()) {
-                                                        addImageToStorage(imageUri, name, email, phoneNo, accountType);
-                                                    }
-                                                });
+                                        if (imageUri == null) {
+                                            Snackbar.make(view, "Please choose a profile image", Snackbar.LENGTH_LONG).show();
+                                        } else {
+                                            FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+                                                    .addOnCompleteListener(task -> {
+                                                        if (task.isSuccessful()) {
+                                                            addImageToStorage(imageUri, name, email, phoneNo, accountType);
+                                                        }
+                                                    });
+                                        }
                                     }
                                 }
                             }
@@ -155,9 +164,10 @@ public class SignUpFragment extends Fragment {
         StorageReference reference = FirebaseStorage.getInstance().getReference("user-images/" + FirebaseAuth.getInstance().getUid());
         reference.putFile(imageUri)
                 .addOnSuccessListener(taskSnapshot -> {
-                    progressDialog.setMessage("Almost there....");
-                    String downloadUrl = reference.getDownloadUrl().toString();
-                    addUserToDb(name, email, downloadUrl, phoneNo, accountType);
+                    reference.getDownloadUrl().addOnSuccessListener(uri -> {
+                        progressDialog.setMessage("Almost there...");
+                        addUserToDb(name, email, uri.toString(), phoneNo, accountType);
+                    });
                 });
     }
 
@@ -172,7 +182,7 @@ public class SignUpFragment extends Fragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode,Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 200 && data != null && resultCode == Activity.RESULT_OK) {
             imageUri = data.getData();
@@ -186,18 +196,18 @@ public class SignUpFragment extends Fragment {
     }
 
     private void addUserToDb(String name, String email, String downloadUrl, String phoneNo, String accountType) {
-        User user = new User(FirebaseAuth.getInstance().getUid(), name, downloadUrl, email, phoneNo, accountType);
-        FirebaseFirestore.getInstance().collection("users/" + accountType)
-                .add(user)
+        User user = new User(FirebaseAuth.getInstance().getUid(), name, email, downloadUrl, phoneNo, accountType);
+        Log.i(TAG, "addUserToDb: User -> " + user);
+        FirebaseDatabase.getInstance().getReference("users/"+ user.getUid())
+                .setValue(user)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        credentialsViewModel.addAccountType(new AccountType(0,accountType));
                         progressDialog.dismiss();
                         requireContext().startActivity(new Intent(requireContext(), MapActivity.class));
+                        requireActivity().finish();
                     }
-                }).addOnFailureListener(e -> {
-                    progressDialog.dismiss();
-            Toast.makeText(requireContext(), "Something went wrong try again", Toast.LENGTH_SHORT).show();
-        });
+                }).addOnFailureListener(e -> Toast.makeText(requireContext(), "Something went wrong try again", Toast.LENGTH_SHORT).show());
     }
 
     @Override

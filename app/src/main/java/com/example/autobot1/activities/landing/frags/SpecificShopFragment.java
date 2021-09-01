@@ -49,20 +49,32 @@ public class SpecificShopFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentSpecificShopBinding.inflate(inflater, container, false);
         viewModel.getShopProducts(name).observe(getViewLifecycleOwner(),productItemList -> {
-            ProductAdapter adapter = new ProductAdapter(requireContext(),productItemList);
-            binding.shopRecycler.hasFixedSize();
-            binding.shopRecycler.setClipToPadding(false);
-            binding.shopRecycler.setClipToPadding(false);
-            binding.shopRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
-            binding.shopRecycler.setAdapter(adapter);
-            adapter.setOnItemClickListener(position ->{
-                requireActivity().getSupportFragmentManager()
+            if (productItemList.isEmpty()){
+                binding.noProductsIv.setVisibility(View.VISIBLE);
+                binding.noProductsTv.setVisibility(View.VISIBLE);
+                binding.shopRecycler.setVisibility(View.GONE);
+            }else {
+                binding.noProductsIv.setVisibility(View.GONE);
+                binding.noProductsTv.setVisibility(View.GONE);
+                binding.shopRecycler.setVisibility(View.VISIBLE);
+                ProductAdapter adapter = new ProductAdapter(requireContext(),productItemList);
+                binding.shopRecycler.hasFixedSize();
+                binding.shopRecycler.setClipToPadding(false);
+                binding.shopRecycler.setClipToPadding(false);
+                binding.shopRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
+                binding.shopRecycler.setAdapter(adapter);
+                adapter.setOnItemClickListener(position -> requireActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.frame_layout,DetailFragment.newInstance(productItemList.get(position)))
-                        .commit();
-            });
+                        .commit());
+            }
         });
-
         return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        binding = null;
     }
 }

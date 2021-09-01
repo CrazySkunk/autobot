@@ -66,6 +66,7 @@ public class AddProductActivity extends AppCompatActivity {
                                             .addOnCompleteListener(task1 -> {
                                                 if (task1.isSuccessful() && task1.isComplete()){
                                                     startActivity(new Intent(AddProductActivity.this,MechanicsActivity.class));
+                                                    finish();
                                                 }
                                             });
                                 }
@@ -99,5 +100,11 @@ public class AddProductActivity extends AppCompatActivity {
                 Log.i(TAG, "onActivityResult: Exception " + e.getMessage());
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        binding = null;
     }
 }

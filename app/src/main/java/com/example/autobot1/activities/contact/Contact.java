@@ -7,11 +7,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.autobot1.activities.contact.data.EmailContent;
 import com.example.autobot1.databinding.ActivityContactBinding;
+import com.example.autobot1.models.ShopItem;
 
 public class Contact extends AppCompatActivity {
     private ActivityContactBinding binding;
-    private String emailAddress;
-    private String phone;
+    private ShopItem shopItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,9 +19,8 @@ public class Contact extends AppCompatActivity {
         binding = ActivityContactBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         Intent intent = getIntent();
-        emailAddress = intent.getParcelableExtra("parcel").toString();
-        phone = intent.getParcelableExtra("parcel").toString();
-        binding.emailAddressEt.setText(emailAddress);
+        shopItem = intent.getParcelableExtra("shop");
+        binding.emailAddressEt.setText(shopItem.getContact());
         binding.sendEmailBtn.setOnClickListener(v -> sendEmail());
         binding.callBtn.setOnClickListener(v -> call());
     }
@@ -29,15 +28,14 @@ public class Contact extends AppCompatActivity {
     private void sendEmail() {
         String subject = binding.subjectEt.getText().toString();
         String description = binding.descriptionEt.getText().toString();
-        emailAddress = binding.emailAddressEt.getText().toString();
-        EmailContent emailContent = new EmailContent(emailAddress, subject, description);
+        EmailContent emailContent = new EmailContent(shopItem.getContact(), subject, description);
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.putExtra("content", emailContent);
         startActivity(intent);
     }
     private void call(){
         Intent intent = new Intent(Intent.ACTION_CALL);
-        intent.putExtra("number",phone);
+        intent.putExtra("number",shopItem.getContact());
         startActivity(intent);
     }
 }

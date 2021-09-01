@@ -1,19 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".activities.landing.frags.CartFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:clipToPadding="false"
-        tools:listitem="@layout/cart_item"
-        android:paddingStart="10dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:paddingEnd="10dp"
-        android:layout_height="match_parent"
-        android:id="@+id/cart_recycler"/>
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/cart_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/cart_item" />
+
+        <ImageView
+            android:id="@+id/no_items_in_cart_iv"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:contentDescription="@string/pic"
+            android:src="@drawable/empty_tray"
+            app:layout_constraintBottom_toBottomOf="@+id/cart_recycler"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/cart_recycler"
+            app:layout_constraintVertical_bias="0.385" />
+
+        <TextView
+            android:id="@+id/no_item_in_cart_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:text="@string/no_item_in_cart_yet"
+            android:textSize="20sp"
+            android:textColor="#757575"
+            app:layout_constraintEnd_toEndOf="@+id/no_items_in_cart_iv"
+            app:layout_constraintStart_toStartOf="@+id/no_items_in_cart_iv"
+            app:layout_constraintTop_toBottomOf="@+id/no_items_in_cart_iv" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </FrameLayout>

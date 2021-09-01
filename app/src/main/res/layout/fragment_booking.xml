@@ -1,30 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
     tools:context=".activities.landing.frags.BookingFragment">
 
-    <TextView
-        android:id="@+id/textBooking"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/antic"
-        android:text="Mechanic Requests"
-        android:textAlignment="center"
-        android:textColor="#000000"
-        android:textSize="25sp" />
+        android:layout_height="match_parent">
 
-    <ListView
-        android:id="@+id/lv_schedules"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/notification_item"
-        android:layout_below="@+id/textBooking"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/et_bg" />
+        <TextView
+            android:id="@+id/textBooking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/antic"
+            android:text="@string/mechanic_requests"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="25sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ListView
+            android:id="@+id/lv_schedules"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_below="@+id/textBooking"
+            android:background="@drawable/et_bg"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textBooking"
+            app:layout_constraintVertical_weight="1"
+            tools:listitem="@layout/notification_item" />
+
+        <ImageView
+            android:id="@+id/no_items_in_cart_iv"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:contentDescription="@string/pic"
+            android:src="@drawable/empty_tray"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textBooking"
+            app:layout_constraintVertical_bias="0.385"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/no_item_in_cart_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/no_item_in_cart_yet"
+            android:textColor="#23414E"
+            android:textSize="20sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/no_items_in_cart_iv"
+            app:layout_constraintStart_toStartOf="@+id/no_items_in_cart_iv"
+            app:layout_constraintTop_toBottomOf="@+id/no_items_in_cart_iv"
+            tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </RelativeLayout>

@@ -6,7 +6,7 @@
     app:startDestination="@id/shops">
     <fragment
         android:id="@+id/shops"
-        android:name="com.example.autobot1.activities.mechanics.frags.MechanicShopsFragment"
+        android:name="com.example.autobot1.activities.landing.frags.MechanicShopsFragment"
         android:label="Shops"
         tools:layout="@layout/fragment_mechanic_shops" >
         <action android:id="@+id/go_to_next_frag"/>

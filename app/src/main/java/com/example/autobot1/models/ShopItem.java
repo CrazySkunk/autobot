@@ -5,7 +5,8 @@ import android.os.Parcelable;
 
 import androidx.room.Entity;
 
-import com.google.type.LatLng;
+import com.google.android.gms.maps.model.LatLng;
+
 
 public class ShopItem implements Parcelable {
     private String title, description,imageUrl,contact;

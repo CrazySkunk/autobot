@@ -14,4 +14,26 @@
         app:spanCount="2"
         tools:listitem="@layout/shop_item" />
 
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="150dp"
+        android:visibility="gone"
+        android:contentDescription="@string/pic"
+        tools:visibility="visible"
+        android:layout_gravity="center"
+        android:layout_height="150dp"
+        android:src="@drawable/empty_tray" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="80dp"
+        android:textSize="20sp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:textColor="#605B5B"
+        android:layout_height="wrap_content"
+        android:text="@string/no_recent_items_yet" />
+
 </FrameLayout>

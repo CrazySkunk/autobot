@@ -68,5 +68,12 @@
     <string name="no_notifications_created_yet">No notifications created yet</string>
     <string name="enter_shop_address">Enter shop address</string>
     <string name="delete_all">Delete all</string>
+    <string name="enter_phone_number">Enter phone number</string>
+    <string name="no_recent_items_yet">No Recent items yet</string>
+    <string name="search_shop">Search shop</string>
+    <string name="register_shop">Register shop</string>
+    <string name="add_product_to_shop">Add product to shop</string>
+    <string name="no_item_in_cart_yet">No item in cart yet</string>
+    <string name="mechanic_requests">Mechanic Requests</string>
 
 </resources>

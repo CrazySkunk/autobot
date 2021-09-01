@@ -48,7 +48,7 @@ public class ShopAdapterFav extends RecyclerView.Adapter<ShopAdapterFav.ShopView
         holder.bind(shopItems.get(position));
         holder.binding.favIcon.setOnClickListener(view -> {
             ShopItemFav item = shopItems.get(position);
-            viewModel.deleteShop(new ShopItemFav(0,item.getTitle(),item.getLocation(),item.getDescription(), item.getImageUrl(), item.getContact(), true));
+            viewModel.deleteShop(new ShopItemFav(0,item.getTitle(),item.getLatitude(), item.getLongitude(), item.getDescription(), item.getImageUrl(), item.getContact(), true));
         });
     }
 
@@ -71,7 +71,7 @@ public class ShopAdapterFav extends RecyclerView.Adapter<ShopAdapterFav.ShopView
         }
         public void bind(ShopItemFav shopItem){
             binding.shopTitleTextView.setText(shopItem.getTitle());
-            binding.shopLocationTextView.setText(String.format("%s,%s", shopItem.getLocation().getLatitude(), shopItem.getLocation().getLongitude()));
+            binding.shopLocationTextView.setText(String.format("%s,%s", shopItem.getLatitude(), shopItem.getLongitude()));
             binding.shopDescriptionTextView.setText(shopItem.getDescription());
             Picasso.get().load(shopItem.getImageUrl()).placeholder(R.drawable.bot).into(binding.shopItemImageView);
             if (shopItem.isFav()){

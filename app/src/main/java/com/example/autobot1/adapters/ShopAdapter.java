@@ -3,8 +3,6 @@ package com.example.autobot1.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
@@ -51,7 +49,7 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ShopViewHolder
         holder.bind(shopItems.get(position));
         holder.binding.favIcon.setOnClickListener(view -> {
             ShopItem item = shopItems.get(position);
-            viewModel.addCartItem(new ShopItemFav(0,item.getTitle(),item.getLocation(),item.getDescription(), item.getImageUrl(), item.getContact(), true));
+            viewModel.addCartItem(new ShopItemFav(0,item.getTitle(),String.valueOf(item.getLocation().getLatitude()),String.valueOf(item.getLocation().getLongitude()),item.getDescription(), item.getImageUrl(), item.getContact(), true));
         });
     }
 
@@ -74,7 +72,7 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ShopViewHolder
         }
         public void bind(ShopItem shopItem){
             binding.shopTitleTextView.setText(shopItem.getTitle());
-            binding.shopLocationTextView.setText(shopItem.getLocation().getLatitude()+","+shopItem.getLocation().getLongitude());
+            binding.shopLocationTextView.setText(String.format("lat: %s,long: %s", shopItem.getLocation().getLatitude(), shopItem.getLocation().getLongitude()));
             binding.shopDescriptionTextView.setText(shopItem.getDescription());
             Picasso.get().load(shopItem.getImageUrl()).placeholder(R.drawable.bot).into(binding.shopItemImageView);
         }

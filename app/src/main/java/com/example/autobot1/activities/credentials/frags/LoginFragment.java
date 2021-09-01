@@ -2,7 +2,9 @@ package com.example.autobot1.activities.credentials.frags;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,18 +14,26 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.autobot1.R;
 import com.example.autobot1.activities.landing.MapActivity;
+import com.example.autobot1.activities.mechanics.MechanicsActivity;
 import com.example.autobot1.databinding.FragmentLoginBinding;
+import com.example.autobot1.models.User;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
 
 public class LoginFragment extends Fragment {
+    private static final String TAG = "LoginFragment";
     private FragmentLoginBinding binding;
     private Animation animation;
     private ProgressDialog progressDialog;
@@ -74,8 +84,33 @@ public class LoginFragment extends Fragment {
                         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                                 .addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
-                                        progressDialog.dismiss();
-                                        requireContext().startActivity(new Intent(requireContext(), MapActivity.class));
+                                        String uid = FirebaseAuth.getInstance().getUid();
+                                        FirebaseDatabase.getInstance().getReference("users")
+                                                .addValueEventListener(new ValueEventListener() {
+                                                    @RequiresApi(api = Build.VERSION_CODES.N)
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        snapshot.getChildren().forEach(user->{
+                                                            User u = user.getValue(User.class);
+                                                            if (u!=null){
+                                                                if (u.getUid().equals(uid)){
+                                                                    if (u.getAccountType().equals("Mechanic")){
+                                                                        requireActivity().startActivity(new Intent(requireContext(), MechanicsActivity.class));
+                                                                    }else {
+                                                                        requireActivity().startActivity(new Intent(requireContext(),MapActivity.class));
+                                                                    }
+                                                                    progressDialog.dismiss();
+                                                                    requireActivity().finish();
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
+                                                        Log.i(TAG, "onCancelled: error -> "+error.getMessage());
+                                                    }
+                                                });
                                     }
                                 });
                     }
