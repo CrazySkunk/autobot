@@ -1,13 +1,10 @@
 <resources>
-    <string name="app_name">AutoBot1</string>
+    <string name="app_name">AutoBot</string>
     <string name="title_activity_maps">Map</string>
     <string name="drawer_opened">Navigation drawer opened</string>
     <string name="drawer_closed">Navigation drawer closed</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="fab_add_schedule">fab_add_schedule</string>
-
-
     <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
     <string name="facebook_application_id" translatable="false">YOUR_APP_ID</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fbYOUR_APP_ID</string>
@@ -17,7 +14,6 @@
     <string name="login_fragment">Login</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="sign_up">Sign up</string>
@@ -47,7 +43,6 @@
     <string name="no_shops_found">No shops found</string>
     <string name="enter_shop_location">Enter shop location</string>
     <string name="submit">Submit</string>
-    ]
     <string name="enter_shop_name">Enter shop name</string>
     <string name="username">Enter Username</string>
     <string name="enter_email_address">Enter email address</string>
@@ -57,7 +52,7 @@
     <string name="administrator_name">Administrator name</string>
     <string name="administrator_company_com">administrator@company.com</string>
     <string name="title">Title</string>
-    <string name="description">This is where the description about the product goes and all other information abotu the product</string>
+    <string name="description">This is where the description about the product goes and all other information about the product</string>
     <string name="price">Price</string>
     <string name="location">Location</string>
     <string name="image">image</string>
@@ -75,5 +70,4 @@
     <string name="add_product_to_shop">Add product to shop</string>
     <string name="no_item_in_cart_yet">No item in cart yet</string>
     <string name="mechanic_requests">Mechanic Requests</string>
-
 </resources>

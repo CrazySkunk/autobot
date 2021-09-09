@@ -69,8 +69,8 @@ public class MechanicShopsFragment extends Fragment {
                             shopItems.get(position).getDescription(),
                             shopItems.get(position).getImageUrl(),
                             shopItems.get(position).getContact(),
-                            String.valueOf(shopItems.get(position).getLocation().getLatitude()),
-                            String.valueOf(shopItems.get(position).getLocation().getLongitude()),
+                            String.valueOf(shopItems.get(position).getLocation().latitude),
+                            String.valueOf(shopItems.get(position).getLocation().longitude),
                             false));
                 });
 

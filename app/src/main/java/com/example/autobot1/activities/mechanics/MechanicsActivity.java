@@ -32,6 +32,7 @@ public class MechanicsActivity extends AppCompatActivity implements BookingFragm
     private ActivityMechanicsBinding binding;
     private ViewPager viewPager;
 
+
     @Override
     protected void onCreate(Bundle saveInstanceBundle) {
         super.onCreate(saveInstanceBundle);
@@ -71,8 +72,8 @@ public class MechanicsActivity extends AppCompatActivity implements BookingFragm
         });
     }
 
-    public void setMapSelected(){
-        viewPager.setCurrentItem(3,true);
+    public void setMapSelected() {
+        viewPager.setCurrentItem(3, true);
     }
 
     @Override
@@ -98,12 +99,12 @@ public class MechanicsActivity extends AppCompatActivity implements BookingFragm
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.register_shop) {
-            startActivity(new Intent(this, RegisterShopActivity.class));
-        }else if(item.getItemId()==R.id.add_product_to_shop){
-            startActivity(new Intent(this,AddProductActivity.class));
-        }else if (item.getItemId()==R.id.logout){
+            getApplicationContext().startActivity(new Intent(this, RegisterShopActivity.class));
+        } else if (item.getItemId() == R.id.add_product_to_shop) {
+            getApplicationContext().startActivity(new Intent(this, AddProductActivity.class));
+        } else if (item.getItemId() == R.id.logout) {
             FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(this, CredentialsActivity.class));
+            getApplicationContext().startActivity(new Intent(this, CredentialsActivity.class));
             finish();
         }
         return true;
@@ -119,16 +120,40 @@ public class MechanicsActivity extends AppCompatActivity implements BookingFragm
         viewPager.setAdapter(adapter);
         binding.tabLayout.setupWithViewPager(viewPager);
     }
+//    private void getUser(String uid){
+//        FirebaseDatabase.getInstance().getReference("users")
+//                .addValueEventListener(new ValueEventListener() {
+//                    @RequiresApi(api = Build.VERSION_CODES.N)
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                        snapshot.getChildren().forEach(user->{
+//                            User u = user.getValue(User.class);
+//                            if (u!=null){
+//                                if (u.getUid().equals(FirebaseAuth.getInstance().getUid())){
+//
+//                                }
+//                            }
+//                        });
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError error) {
+//
+//                    }
+//                });
+//    }
 
     @Override
     public void sendData(Request booking) {
         String tag = "android:switcher:" + R.id.mechanics_view_pager + ":" + 1;
         MapFragment fragment = (MapFragment) getSupportFragmentManager().findFragmentByTag(tag);
-        if (fragment!=null){
-        fragment.setBooking(booking);}else {
+        if (fragment != null) {
+            fragment.setBooking(booking);
+        } else {
             Toast.makeText(this, "Internal error", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     @Override
     protected void onDestroy() {

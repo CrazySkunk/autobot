@@ -3,9 +3,7 @@ package com.example.autobot1.activities.credentials.frags;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -23,8 +21,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
@@ -84,12 +82,13 @@ public class SignUpFragment extends Fragment {
                     .navigate(R.id.action_FirstFragment_to_SecondFragment);
         });
         binding.profilePicIv.setOnClickListener(v -> {
+            Log.i(TAG, "onViewCreated: imageView clicked");
             if (canReadStorage()) {
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType("image/*");
                 startActivityForResult(intent, 200);
             } else {
-                requireActivity().requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
+                ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
             }
         });
         binding.signUpButton.setOnClickListener(signUpBtn -> {
@@ -136,6 +135,7 @@ public class SignUpFragment extends Fragment {
                                     } else {
                                         if (imageUri == null) {
                                             Snackbar.make(view, "Please choose a profile image", Snackbar.LENGTH_LONG).show();
+                                            progressDialog.dismiss();
                                         } else {
                                             FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
                                                     .addOnCompleteListener(task -> {
@@ -148,7 +148,6 @@ public class SignUpFragment extends Fragment {
                                 }
                             }
                         }
-
                     }
                 }
             }
@@ -157,7 +156,7 @@ public class SignUpFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private boolean canReadStorage() {
-        return requireActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
+        return ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
     }
 
     private void addImageToStorage(Uri imageUri, String name, String email, String phoneNo, String accountType) {
@@ -171,6 +170,7 @@ public class SignUpFragment extends Fragment {
                 });
     }
 
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -182,7 +182,7 @@ public class SignUpFragment extends Fragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode,Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 200 && data != null && resultCode == Activity.RESULT_OK) {
             imageUri = data.getData();
@@ -198,11 +198,11 @@ public class SignUpFragment extends Fragment {
     private void addUserToDb(String name, String email, String downloadUrl, String phoneNo, String accountType) {
         User user = new User(FirebaseAuth.getInstance().getUid(), name, email, downloadUrl, phoneNo, accountType);
         Log.i(TAG, "addUserToDb: User -> " + user);
-        FirebaseDatabase.getInstance().getReference("users/"+ user.getUid())
+        FirebaseDatabase.getInstance().getReference("users/" + user.getUid())
                 .setValue(user)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        credentialsViewModel.addAccountType(new AccountType(0,accountType));
+                        credentialsViewModel.addAccountType(new AccountType(0, accountType));
                         progressDialog.dismiss();
                         requireContext().startActivity(new Intent(requireContext(), MapActivity.class));
                         requireActivity().finish();

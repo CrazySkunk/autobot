@@ -267,14 +267,14 @@ public class MapFragment extends Fragment implements RoutingListener {
                 if (shop != null) {
                     googleMap.addMarker(new MarkerOptions()
                             .position(new LatLng(
-                                    shop.getLocation().getLatitude(),
-                                    shop.getLocation().getLongitude()
+                                    shop.getLocation().latitude,
+                                    shop.getLocation().longitude
                             ))
                             .title(shop.getTitle())
                             .snippet(shop.getDescription().substring(0, 10)));
                     googleMap.setOnMapClickListener(
                             latLng -> shops.forEach(shop1 -> {
-                                if (new LatLng(shop1.getLocation().getLatitude(), shop.getLocation().getLongitude()).equals(latLng)) {
+                                if (new LatLng(shop1.getLocation().latitude, shop.getLocation().longitude).equals(latLng)) {
                                     View v = LayoutInflater.from(requireContext()).inflate(R.layout.custom_map_dialog, null, false);
                                     AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
                                     TextView title = v.findViewById(R.id.shop_title_text_view);
@@ -293,7 +293,7 @@ public class MapFragment extends Fragment implements RoutingListener {
                                         intent.putExtra("number", shop1.getContact());
                                         startActivity(intent);
                                     });
-                                    getDirections.setOnClickListener(view13 -> findRoutes(new LatLng(location.getLatitude(), location.getLongitude()), new LatLng(shop1.getLocation().getLatitude(), shop1.getLocation().getLongitude())));
+                                    getDirections.setOnClickListener(view13 -> findRoutes(new LatLng(location.getLatitude(), location.getLongitude()), new LatLng(shop1.getLocation().latitude, shop1.getLocation().longitude)));
                                     builder.setCancelable(true);
                                     builder.setView(v);
                                     AlertDialog alertDialog = builder.create();
@@ -358,15 +358,15 @@ public class MapFragment extends Fragment implements RoutingListener {
         List<ShopItem> shopItemList = new ArrayList<>();
         viewModel.getShops().observe(getViewLifecycleOwner(), shopItems ->
                 shopItems.forEach(shopItem -> {
-                    if (shopItem.getLocation().getLatitude() == latitude + 0.5 && shopItem.getLocation().getLongitude() == longitude + 0.5) {
+                    if (shopItem.getLocation().latitude == latitude + 0.5 && shopItem.getLocation().longitude == longitude + 0.5) {
                         shopItemList.add(shopItem);
-                    } else if (shopItem.getLocation().getLatitude() == latitude + 0.4 && shopItem.getLocation().getLongitude() == longitude + 0.4) {
+                    } else if (shopItem.getLocation().latitude == latitude + 0.4 && shopItem.getLocation().longitude == longitude + 0.4) {
                         shopItemList.add(shopItem);
-                    } else if (shopItem.getLocation().getLatitude() == latitude + 0.3 && shopItem.getLocation().getLongitude() == longitude + 0.3) {
+                    } else if (shopItem.getLocation().latitude == latitude + 0.3 && shopItem.getLocation().longitude == longitude + 0.3) {
                         shopItemList.add(shopItem);
-                    } else if (shopItem.getLocation().getLatitude() == latitude + 0.2 && shopItem.getLocation().getLongitude() == longitude + 0.2) {
+                    } else if (shopItem.getLocation().latitude == latitude + 0.2 && shopItem.getLocation().longitude == longitude + 0.2) {
                         shopItemList.add(shopItem);
-                    } else if (shopItem.getLocation().getLatitude() == latitude + 0.1 && shopItem.getLocation().getLongitude() == longitude + 0.1) {
+                    } else if (shopItem.getLocation().latitude == latitude + 0.1 && shopItem.getLocation().longitude == longitude + 0.1) {
                         shopItemList.add(shopItem);
                     }
                 }));

@@ -76,7 +76,7 @@ public class RecentShopsAdapter extends RecyclerView.Adapter<RecentShopsViewHold
 
         public void bind(ShopItem shopItem) {
             title.setText(shopItem.getTitle());
-            location.setText(String.format("Lat: %s\nLong: %s", shopItem.getLocation().getLatitude(), shopItem.getLocation().getLatitude()));
+            location.setText(String.format("Lat: %s\nLong: %s", shopItem.getLocation().latitude, shopItem.getLocation().longitude));
             description.setText(shopItem.getDescription());
             Picasso.get().load(shopItem.getImageUrl()).placeholder(R.drawable.account_box_type).into(shopImage);
         }

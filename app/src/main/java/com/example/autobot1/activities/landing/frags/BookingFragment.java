@@ -43,19 +43,21 @@ public class BookingFragment extends Fragment {
     private void inflateList() {
         ListView listView = binding.lvSchedules;
         int resource = R.layout.booking_item;
-        bookingsViewModel.getMechanicBookings(FirebaseAuth.getInstance().getUid()).observe(getViewLifecycleOwner(),bookings->{
-            if (bookings.isEmpty()){
+        bookingsViewModel.getMechanicBookings(FirebaseAuth.getInstance().getUid()).observe(getViewLifecycleOwner(), bookings -> {
+            if (bookings.isEmpty()) {
                 binding.noItemsInCartIv.setVisibility(View.VISIBLE);
                 binding.noItemInCartTv.setVisibility(View.VISIBLE);
                 binding.lvSchedules.setVisibility(View.GONE);
-            }else {
+            } else {
                 binding.noItemsInCartIv.setVisibility(View.GONE);
                 binding.noItemInCartTv.setVisibility(View.GONE);
                 binding.lvSchedules.setVisibility(View.VISIBLE);
                 adapter = new BookingsAdapter(requireContext(), resource, bookings);
                 listView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
-                adapter.setOnItemClickListener(position -> ((MechanicsActivity) requireActivity()).setMapSelected());
+                adapter.setOnItemClickListener(position -> {
+                    ((MechanicsActivity) requireActivity()).setMapSelected();
+                });
             }
         });
     }
