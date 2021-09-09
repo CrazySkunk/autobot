@@ -20,7 +20,7 @@
         tools:listitem="@layout/shop_item" />
 
         <ImageView
-            android:id="@+id/no_items_in_cart_iv"
+            android:id="@+id/no_items_in_cart_iv_fav"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:contentDescription="@string/pic"
@@ -34,7 +34,7 @@
             tools:visibility="visible" />
 
         <TextView
-        android:id="@+id/no_item_in_cart_tv"
+        android:id="@+id/no_item_in_cart_tv_fav"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -43,9 +43,9 @@
         android:text="@string/no_item_in_cart_yet"
         android:textSize="20sp"
         android:textColor="#757575"
-        app:layout_constraintEnd_toEndOf="@+id/no_items_in_cart_iv"
-        app:layout_constraintStart_toStartOf="@+id/no_items_in_cart_iv"
-        app:layout_constraintTop_toBottomOf="@+id/no_items_in_cart_iv" />
+        app:layout_constraintEnd_toEndOf="@+id/no_items_in_cart_iv_fav"
+        app:layout_constraintStart_toStartOf="@+id/no_items_in_cart_iv_fav"
+        app:layout_constraintTop_toBottomOf="@+id/no_items_in_cart_iv_fav" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

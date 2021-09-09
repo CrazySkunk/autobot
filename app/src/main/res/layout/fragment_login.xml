@@ -14,7 +14,8 @@
         android:src="@drawable/bot3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/pic" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/email_input_layout"
@@ -24,15 +25,16 @@
         android:layout_marginStart="50dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="50dp"
-        android:hint="Enter email address"
+        android:hint="@string/enter_email_address"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bot_logo_login">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/schedule_title_et"
+            android:id="@+id/email_input_login_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             app:layout_constraintBottom_toTopOf="@id/sign_up_page_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +49,7 @@
         android:layout_marginStart="50dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="50dp"
-        android:hint="Password"
+        android:hint="@string/password"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email_input_layout">
@@ -56,6 +58,7 @@
             android:id="@+id/password_input_login_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             app:layout_constraintBottom_toTopOf="@id/sign_up_page_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -69,7 +72,7 @@
         android:layout_marginStart="110dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="110dp"
-        android:text="login"
+        android:text="@string/login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password_input_layout" />
@@ -85,7 +88,8 @@
         android:src="@drawable/register"
         android:text="@string/previous"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/login" />
 
     <View
         android:id="@+id/animation_view"

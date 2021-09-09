@@ -54,12 +54,12 @@ public class FavoritesFragment extends Fragment {
     private void inflateRecycler() {
         viewModel.getAllShops().observe(getViewLifecycleOwner(), shopItemFavs -> {
             if (shopItemFavs.isEmpty()) {
-                binding.noItemInCartTv.setVisibility(View.VISIBLE);
-                binding.noItemInCartTv.setVisibility(View.VISIBLE);
+                binding.noItemInCartTvFav.setVisibility(View.VISIBLE);
+                binding.noItemInCartTvFav.setVisibility(View.VISIBLE);
                 binding.favoriteShops.setVisibility(View.GONE);
             } else {
-                binding.noItemInCartTv.setVisibility(View.GONE);
-                binding.noItemInCartTv.setVisibility(View.GONE);
+                binding.noItemInCartTvFav.setVisibility(View.GONE);
+                binding.noItemInCartTvFav.setVisibility(View.GONE);
                 binding.favoriteShops.setVisibility(View.VISIBLE);
                 ShopAdapterFav adapter = new ShopAdapterFav(shopItemFavs);
                 binding.favoriteShops.setHasFixedSize(true);

@@ -55,9 +55,7 @@ public class BookingFragment extends Fragment {
                 adapter = new BookingsAdapter(requireContext(), resource, bookings);
                 listView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
-                adapter.setOnItemClickListener(position -> {
-                    ((MechanicsActivity) requireActivity()).setMapSelected();
-                });
+                adapter.setOnItemClickListener(position -> ((MechanicsActivity) requireActivity()).setMapSelected());
             }
         });
     }

@@ -15,7 +15,7 @@
         tools:listitem="@layout/shop_item" />
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/empty_recent_iv"
         android:layout_width="150dp"
         android:visibility="gone"
         android:contentDescription="@string/pic"
@@ -25,7 +25,7 @@
         android:src="@drawable/empty_tray" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/empty_recent_tv"
         android:layout_width="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="80dp"

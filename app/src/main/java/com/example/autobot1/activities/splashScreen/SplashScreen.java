@@ -1,5 +1,6 @@
 package com.example.autobot1.activities.splashScreen;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+@SuppressLint("CustomSplashScreen")
 public class SplashScreen extends AppCompatActivity {
     private static final String TAG = "SplashScreen";
     //Variables
@@ -58,6 +60,7 @@ public class SplashScreen extends AppCompatActivity {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user == null) {
                 startActivity(new Intent(SplashScreen.this, CredentialsActivity.class));
+                finish();
             } else {
                 FirebaseDatabase.getInstance().getReference("users")
                         .addValueEventListener(new ValueEventListener() {

@@ -94,8 +94,17 @@ public class ScheduleFragment extends Fragment {
         ListView listView = binding.lvSchedules;
         int resource = R.layout.booking_item;
         viewModel.getMechanicBookings(FirebaseAuth.getInstance().getUid()).observe(getViewLifecycleOwner(), bookings -> {
-            BookingsAdapter adapter = new BookingsAdapter(requireContext(), resource, bookings);
-            listView.setAdapter(adapter);
+            if (bookings.isEmpty()) {
+                binding.emptyTrayIv1.setVisibility(View.VISIBLE);
+                binding.emptyTrayTv.setVisibility(View.VISIBLE);
+                binding.lvSchedules.setVisibility(View.GONE);
+            } else {
+                binding.emptyTrayIv1.setVisibility(View.GONE);
+                binding.emptyTrayTv.setVisibility(View.GONE);
+                binding.lvSchedules.setVisibility(View.VISIBLE);
+                BookingsAdapter adapter = new BookingsAdapter(requireContext(), resource, bookings);
+                listView.setAdapter(adapter);
+            }
         });
 
     }

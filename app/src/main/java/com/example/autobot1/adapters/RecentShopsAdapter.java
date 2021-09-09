@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.autobot1.R;
 import com.example.autobot1.adapters.RecentShopsAdapter.RecentShopsViewHolder;
+import com.example.autobot1.models.RecentShopItem;
 import com.example.autobot1.models.ShopItem;
 import com.squareup.picasso.Picasso;
 
@@ -19,10 +20,10 @@ import java.util.List;
 
 public class RecentShopsAdapter extends RecyclerView.Adapter<RecentShopsViewHolder> {
     private final Context context;
-    private final List<ShopItem> shopItems;
+    private final List<RecentShopItem> shopItems;
     private OnItemClick listener;
 
-    public RecentShopsAdapter(Context context, List<ShopItem> shopItems) {
+    public RecentShopsAdapter(Context context, List<RecentShopItem> shopItems) {
         this.context = context;
         this.shopItems = shopItems;
     }
@@ -74,9 +75,9 @@ public class RecentShopsAdapter extends RecyclerView.Adapter<RecentShopsViewHold
             });
         }
 
-        public void bind(ShopItem shopItem) {
+        public void bind(RecentShopItem shopItem) {
             title.setText(shopItem.getTitle());
-            location.setText(String.format("Lat: %s\nLong: %s", shopItem.getLocation().latitude, shopItem.getLocation().longitude));
+            location.setText(String.format("Lat: %s\nLong: %s", shopItem.getLatitude(), shopItem.getLongitude()));
             description.setText(shopItem.getDescription());
             Picasso.get().load(shopItem.getImageUrl()).placeholder(R.drawable.account_box_type).into(shopImage);
         }
