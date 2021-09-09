@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -15,10 +16,13 @@ import com.example.autobot1.activities.mechanics.models.Bookings;
 import com.example.autobot1.activities.mechanics.viewmodels.BookingsViewModel;
 import com.example.autobot1.adapters.BookingsAdapter;
 import com.example.autobot1.databinding.FragmentScheduleBinding;
+import com.example.autobot1.databinding.ScheduleItemLayoutBinding;
+import com.example.autobot1.models.ScheduleItem;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ScheduleFragment extends Fragment {
     private FragmentScheduleBinding binding;
@@ -52,16 +56,45 @@ public class ScheduleFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentScheduleBinding.inflate(inflater,container,false);
+        binding = FragmentScheduleBinding.inflate(inflater, container, false);
         inflateListView();
+        binding.addScheduleFab.setOnClickListener(view -> {
+            View v = LayoutInflater.from(requireContext()).inflate(R.layout.schedule_item_layout, null, false);
+            ScheduleItemLayoutBinding bind = ScheduleItemLayoutBinding.bind(v);
+            String title = Objects.requireNonNull(bind.scheduleTitleEt.getText()).toString().trim();
+            String location = Objects.requireNonNull(bind.scheduleLocationEt.getText()).toString().trim();
+            String description = Objects.requireNonNull(bind.descriptionScheduleEt.getText()).toString().trim();
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext())
+                    .setTitle("AutoBot")
+                    .setCancelable(true)
+                    .setView(binding.getRoot());
+            bind.submitSchedule.setOnClickListener(view1 -> {
+                if (title.isEmpty()) {
+                    bind.scheduleTitleEt.setError("Cannot be empty");
+                } else {
+                    if (location.isEmpty()) {
+                        bind.scheduleLocationEt.setError("Cannot be empty");
+                    } else {
+                        if (description.isEmpty()) {
+                            bind.descriptionScheduleEt.setError("Cannot be empty");
+                        } else {
+                            ScheduleItem scheduleItem = new ScheduleItem(title, location, description);
+                            viewModel.addScheduleMechanic(scheduleItem, FirebaseAuth.getInstance().getUid());
+                        }
+                    }
+                }
+            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        });
         return binding.getRoot();
     }
 
     private void inflateListView() {
         ListView listView = binding.lvSchedules;
         int resource = R.layout.booking_item;
-        viewModel.getMechanicBookings(FirebaseAuth.getInstance().getUid()).observe(getViewLifecycleOwner(),bookings -> {
-            BookingsAdapter adapter = new BookingsAdapter(requireContext(),resource,bookings);
+        viewModel.getMechanicBookings(FirebaseAuth.getInstance().getUid()).observe(getViewLifecycleOwner(), bookings -> {
+            BookingsAdapter adapter = new BookingsAdapter(requireContext(), resource, bookings);
             listView.setAdapter(adapter);
         });
 

@@ -70,4 +70,7 @@
     <string name="add_product_to_shop">Add product to shop</string>
     <string name="no_item_in_cart_yet">No item in cart yet</string>
     <string name="mechanic_requests">Mechanic Requests</string>
+    <string name="description_schedule">Description</string>
+    <string name="enter_location">Enter Location</string>
+    <string name="enter_title">Enter title</string>
 </resources>

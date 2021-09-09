@@ -1,20 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activities.credentials.frags.LoginFragment">
-
-    <ImageView
-        android:id="@+id/bot_logo_login"
-        android:layout_width="wrap_content"
-        android:layout_height="200dp"
-        android:layout_marginTop="20dp"
-        android:src="@drawable/bot3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp"
+    app:layout_constraintCircleRadius="20dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/email_input_layout"
@@ -22,17 +12,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="50dp"
-        android:hint="Enter email address"
+        android:hint="@string/enter_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bot_logo_login">
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/schedule_title_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             app:layout_constraintBottom_toTopOf="@id/sign_up_page_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -40,65 +31,68 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/password_input_layout"
+        android:id="@+id/textInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="50dp"
-        android:hint="Password"
+        android:hint="@string/enter_location"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email_input_layout">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/password_input_login_et"
             android:layout_width="match_parent"
+            android:id="@+id/schedule_location_et"
             android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
             app:layout_constraintBottom_toTopOf="@id/sign_up_page_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/login_button"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout2"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="110dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="110dp"
-        android:text="login"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="50dp"
+        android:hint="@string/description_schedule"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password_input_layout" />
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
 
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/description_schedule_et"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_gravity="top"
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            app:layout_constraintBottom_toTopOf="@id/sign_up_page_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/sign_up_page_button"
+    <Button
+        android:id="@+id/submit_schedule"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:backgroundTint="@color/white"
-        android:elevation="20dp"
-        android:src="@drawable/register"
-        android:text="@string/previous"
+        android:text="@string/submit"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <View
-        android:id="@+id/animation_view"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_margin="16dp"
-        android:background="#B88080"
-        android:text="@string/previous"
-        android:tint="@color/transparent"
-        android:tintMode="src_atop"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/textInputLayout2"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout2"
+        app:layout_constraintVertical_bias="0.143" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

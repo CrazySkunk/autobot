@@ -323,10 +323,11 @@ public class MapFragment extends Fragment implements RoutingListener {
         if (item.getItemId() == R.id.logout) {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(requireContext(), CredentialsActivity.class));
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
+
+        } else if (item.getItemId()==R.id.purchases){
+            Toast.makeText(requireContext(), "Purchases clicked", Toast.LENGTH_SHORT).show();
         }
+        return true;
     }
 
     /***
