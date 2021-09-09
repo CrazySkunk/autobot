@@ -99,12 +99,12 @@ public class MechanicsActivity extends AppCompatActivity implements BookingFragm
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.register_shop) {
-            getApplicationContext().startActivity(new Intent(this, RegisterShopActivity.class));
+            startActivity(new Intent(this, RegisterShopActivity.class));
         } else if (item.getItemId() == R.id.add_product_to_shop) {
-            getApplicationContext().startActivity(new Intent(this, AddProductActivity.class));
+            startActivity(new Intent(this, AddProductActivity.class));
         } else if (item.getItemId() == R.id.logout) {
             FirebaseAuth.getInstance().signOut();
-            getApplicationContext().startActivity(new Intent(this, CredentialsActivity.class));
+            startActivity(new Intent(this, CredentialsActivity.class));
             finish();
         }
         return true;
@@ -120,28 +120,6 @@ public class MechanicsActivity extends AppCompatActivity implements BookingFragm
         viewPager.setAdapter(adapter);
         binding.tabLayout.setupWithViewPager(viewPager);
     }
-//    private void getUser(String uid){
-//        FirebaseDatabase.getInstance().getReference("users")
-//                .addValueEventListener(new ValueEventListener() {
-//                    @RequiresApi(api = Build.VERSION_CODES.N)
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                        snapshot.getChildren().forEach(user->{
-//                            User u = user.getValue(User.class);
-//                            if (u!=null){
-//                                if (u.getUid().equals(FirebaseAuth.getInstance().getUid())){
-//
-//                                }
-//                            }
-//                        });
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError error) {
-//
-//                    }
-//                });
-//    }
 
     @Override
     public void sendData(Request booking) {
