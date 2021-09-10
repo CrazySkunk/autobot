@@ -51,7 +51,7 @@
         <activity android:name=".activities.contact.Contact" />
         <activity android:name=".activities.credentials.RegisterPage" />
         <activity
-            android:name=".activities.splashScreen.SplashScreen"
+            android:name=".activities.splashScreen.IntroScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

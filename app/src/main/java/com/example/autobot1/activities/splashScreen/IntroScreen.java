@@ -1,6 +1,5 @@
 package com.example.autobot1.activities.splashScreen;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,13 +27,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-@SuppressLint("CustomSplashScreen")
-public class SplashScreen extends AppCompatActivity {
+public class IntroScreen extends AppCompatActivity {
     private static final String TAG = "SplashScreen";
     //Variables
     Animation topAnim, bottomAnim;
     ImageView image;
     TextView logo, slogan;
+    int SPLASH_SCREEN = 5000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,11 +54,10 @@ public class SplashScreen extends AppCompatActivity {
         logo.setAnimation(bottomAnim);
         slogan.setAnimation(bottomAnim);
 
-        int SPLASH_SCREEN = 5000;
         new Handler().postDelayed(() -> {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user == null) {
-                startActivity(new Intent(SplashScreen.this, CredentialsActivity.class));
+                startActivity(new Intent(IntroScreen.this, CredentialsActivity.class));
                 finish();
             } else {
                 FirebaseDatabase.getInstance().getReference("users")
@@ -71,9 +69,9 @@ public class SplashScreen extends AppCompatActivity {
                                     User u = user.getValue(User.class);
                                     if (u != null) {
                                         if (u.getUid().equals(FirebaseAuth.getInstance().getUid()) && u.getAccountType().equals("Mechanic")) {
-                                            startActivity(new Intent(SplashScreen.this, MechanicsActivity.class));
+                                            startActivity(new Intent(IntroScreen.this, MechanicsActivity.class));
                                         } else {
-                                            startActivity(new Intent(SplashScreen.this, MapActivity.class));
+                                            startActivity(new Intent(IntroScreen.this, MapActivity.class));
                                         }
                                         finish();
                                     }
