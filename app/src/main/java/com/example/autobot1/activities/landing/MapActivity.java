@@ -1,8 +1,11 @@
 package com.example.autobot1.activities.landing;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -18,11 +21,18 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.autobot1.R;
+import com.example.autobot1.activities.credentials.CredentialsActivity;
 import com.example.autobot1.activities.credentials.viewmodels.CredentialsViewModel;
+import com.example.autobot1.activities.landing.frags.BookingFragment;
+import com.example.autobot1.activities.landing.frags.CartFragment;
 import com.example.autobot1.activities.landing.frags.FavoritesFragment;
 import com.example.autobot1.activities.landing.frags.MapFragment;
+import com.example.autobot1.activities.landing.frags.MechanicShopsFragment;
 import com.example.autobot1.activities.landing.frags.RecentFragment;
 import com.example.autobot1.activities.landing.frags.SpecificShopFragment;
+import com.example.autobot1.activities.mechanics.AddProductActivity;
+import com.example.autobot1.activities.mechanics.RegisterShopActivity;
+import com.example.autobot1.activities.mechanics.frags.NotificationsFragment;
 import com.example.autobot1.activities.mechanics.frags.ScheduleFragment;
 import com.example.autobot1.databinding.ActivityMapBinding;
 import com.example.autobot1.databinding.HeaderLayoutBinding;
@@ -47,6 +57,7 @@ public class MapActivity extends AppCompatActivity implements NavigationView.OnN
     protected Toolbar toolbar;
     private List<AccountType> accountType;
     private String type;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +102,50 @@ public class MapActivity extends AppCompatActivity implements NavigationView.OnN
             Objects.requireNonNull(getSupportActionBar()).setTitle("Map");
         }
         drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.main_menu,menu);
+        return true;
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.add_product_item_mechanic:
+                startActivity(new Intent(this,AddProductActivity.class));
+                break;
+            case R.id.shop_item_all:
+                inflateFragContainer(new MechanicShopsFragment());
+                break;
+            case R.id.register_shop_item_mechanic:
+                startActivity(new Intent(this, RegisterShopActivity.class));
+                break;
+            case R.id.notifications_item_all:
+                inflateFragContainer(new NotificationsFragment());
+                break;
+            case R.id.booking_item_all:
+                inflateFragContainer(new BookingFragment());
+                break;
+            case R.id.account_item_all:
+                //todo: Create account activity
+            case R.id.request_item_all:
+                inflateFragContainer(new BookingFragment());
+                break;
+            case R.id.purchases_item_client:
+                inflateFragContainer(new CartFragment());
+                break;
+            case R.id.logout_item_all:
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(this, CredentialsActivity.class));
+                break;
+            default:
+                super.onOptionsItemSelected(item);
+        }
         return true;
     }
 

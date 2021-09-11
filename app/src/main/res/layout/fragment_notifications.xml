@@ -18,21 +18,24 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/no_notifications_yet_im"
         android:layout_width="100dp"
-        android:contentDescription="@string/pic"
-        android:layout_gravity="center_horizontal|center"
         android:layout_height="100dp"
+        android:layout_gravity="center_horizontal|center"
+        android:contentDescription="@string/pic"
+        android:src="@drawable/empty_tray"
         android:visibility="gone"
-        android:src="@drawable/empty_tray" />
+        tools:visibility="visible" />
+
     <TextView
-        android:id="@+id/no_notifications_yet"
+        android:id="@+id/no_notifications_yet_tv"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|center"
+        android:layout_marginTop="130sp"
         android:text="@string/no_notifications_created_yet"
         android:visibility="gone"
-        android:layout_gravity="center_horizontal|center"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="130sp"/>
+        tools:visibility="visible" />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"

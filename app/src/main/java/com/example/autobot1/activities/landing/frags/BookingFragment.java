@@ -28,7 +28,7 @@ public class BookingFragment extends Fragment {
 
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bookingsViewModel = new ViewModelProvider(this).get(BookingsViewModel.class);
     }
@@ -64,16 +64,15 @@ public class BookingFragment extends Fragment {
         void sendData(Request message);
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-
-        try {
-            SM = (SendMessage) getActivity();
-        } catch (ClassCastException e) {
-            throw new ClassCastException("Error in retrieving data. Please try again");
-        }
-    }
+//    @Override
+//    public void onAttach(@NonNull Context context) {
+//        super.onAttach(context);
+//        try {
+//            SM = (SendMessage) getActivity();
+//        } catch (ClassCastException e) {
+//            throw new ClassCastException("Error in retrieving data. Please try again");
+//        }
+//    }
 
     @Override
     public void onDestroy() {

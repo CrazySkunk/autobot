@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group
+        android:enabled="true"
+        android:menuCategory="alternative"
+        android:orderInCategory="@integer/config_navAnimTime"
+        android:visible="true">
+        <item
+            android:id="@+id/add_product_item_mechanic"
+            android:icon="@drawable/add_shopping_cart"
+            android:title="@string/add_product_to_shop"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/shop_item_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/store"
+            android:title="@string/shops" />
+        <item
+            android:id="@+id/register_shop_item_mechanic"
+            android:icon="@drawable/build"
+            android:title="@string/register_shop"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/notifications_item_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/notifications"
+            android:title="@string/notifications" />
+        <item
+            android:id="@+id/booking_item_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/schedule"
+            android:title="@string/schedule" />
+    </group>
+
+    <group
+        android:enabled="true"
+        android:menuCategory="container"
+        android:visible="true">
+        <item
+            android:id="@+id/account_item_all"
+            android:icon="@drawable/account_box_type"
+            android:title="@string/account"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/request_item_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/request"
+            android:title="@string/bookings" />
+        <item
+            android:id="@+id/purchases_item_client"
+            android:icon="@drawable/shopping_cart"
+            android:title="@string/purchases"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/logout_item_all"
+            android:icon="@drawable/exit_to_app"
+            android:title="@string/logout" />
+    </group>
+
+</menu>

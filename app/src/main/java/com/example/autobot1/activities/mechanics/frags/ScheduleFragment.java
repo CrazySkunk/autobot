@@ -1,5 +1,6 @@
 package com.example.autobot1.activities.mechanics.frags;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.autobot1.R;
+import com.example.autobot1.activities.landing.frags.ScheduleItemLayout;
 import com.example.autobot1.activities.mechanics.models.Bookings;
 import com.example.autobot1.activities.mechanics.viewmodels.BookingsViewModel;
 import com.example.autobot1.adapters.BookingsAdapter;
@@ -59,33 +61,7 @@ public class ScheduleFragment extends Fragment {
         binding = FragmentScheduleBinding.inflate(inflater, container, false);
         inflateListView();
         binding.addScheduleFab.setOnClickListener(view -> {
-            View v = LayoutInflater.from(requireContext()).inflate(R.layout.schedule_item_layout, null, false);
-            ScheduleItemLayoutBinding bind = ScheduleItemLayoutBinding.bind(v);
-            String title = Objects.requireNonNull(bind.scheduleTitleEt.getText()).toString().trim();
-            String location = Objects.requireNonNull(bind.scheduleLocationEt.getText()).toString().trim();
-            String description = Objects.requireNonNull(bind.descriptionScheduleEt.getText()).toString().trim();
-            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext())
-                    .setTitle("AutoBot")
-                    .setCancelable(true)
-                    .setView(binding.getRoot());
-            bind.submitSchedule.setOnClickListener(view1 -> {
-                if (title.isEmpty()) {
-                    bind.scheduleTitleEt.setError("Cannot be empty");
-                } else {
-                    if (location.isEmpty()) {
-                        bind.scheduleLocationEt.setError("Cannot be empty");
-                    } else {
-                        if (description.isEmpty()) {
-                            bind.descriptionScheduleEt.setError("Cannot be empty");
-                        } else {
-                            ScheduleItem scheduleItem = new ScheduleItem(title, location, description);
-                            viewModel.addScheduleMechanic(scheduleItem, FirebaseAuth.getInstance().getUid());
-                        }
-                    }
-                }
-            });
-            AlertDialog alertDialog = builder.create();
-            alertDialog.show();
+            startActivity(new Intent(requireContext(), ScheduleItemLayout.class));
         });
         return binding.getRoot();
     }

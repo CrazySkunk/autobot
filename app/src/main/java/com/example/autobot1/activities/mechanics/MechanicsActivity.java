@@ -32,7 +32,6 @@ public class MechanicsActivity extends AppCompatActivity implements BookingFragm
     private ActivityMechanicsBinding binding;
     private ViewPager viewPager;
 
-
     @Override
     protected void onCreate(Bundle saveInstanceBundle) {
         super.onCreate(saveInstanceBundle);
@@ -51,7 +50,7 @@ public class MechanicsActivity extends AppCompatActivity implements BookingFragm
                 } else if (tab.getId() == R.id.notifications_tab) {
                     toolbar.setTitle("Notifications");
                     binding.tabLayout.selectTab(tab);
-                } else if (tab.getId() == R.id.booking_tab) {
+                } else if (tab.getId() == R.id.booking_tab_mechanic) {
                     toolbar.setTitle("Booking");
                     binding.tabLayout.selectTab(tab);
                 } else if (tab.getId() == R.id.schedule) {
@@ -78,7 +77,7 @@ public class MechanicsActivity extends AppCompatActivity implements BookingFragm
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.mechanic_shop_menu, menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
         MenuItem item = menu.findItem(R.id.search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
         searchView.setQueryHint("Search for client");
@@ -97,18 +96,32 @@ public class MechanicsActivity extends AppCompatActivity implements BookingFragm
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.register_shop) {
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.register_shop_mechanic) {
             startActivity(new Intent(this, RegisterShopActivity.class));
-        } else if (item.getItemId() == R.id.add_product_to_shop) {
+        } else if (item.getItemId() == R.id.add_product_to_shop_mechanic) {
             startActivity(new Intent(this, AddProductActivity.class));
-        } else if (item.getItemId() == R.id.logout) {
+        } else if (item.getItemId() == R.id.logout_mechanic) {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(this, CredentialsActivity.class));
             finish();
         }
         return true;
     }
+
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        if (item.getItemId() == R.id.register_shop_mechanic) {
+//            startActivity(new Intent(this, RegisterShopActivity.class));
+//        } else if (item.getItemId() == R.id.add_product_to_shop_mechanic) {
+//            startActivity(new Intent(this, AddProductActivity.class));
+//        } else if (item.getItemId() == R.id.logout_mechanic) {
+//            FirebaseAuth.getInstance().signOut();
+//            startActivity(new Intent(this, CredentialsActivity.class));
+//            finish();
+//        }
+//        return true;
+//    }
 
     private void setUpAdapter() {
         MechanicPageAdapter adapter = new MechanicPageAdapter(getSupportFragmentManager());

@@ -40,7 +40,7 @@ public class FavoritesFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        requireActivity().getMenuInflater().inflate(R.menu.cart_menu,menu);
+        requireActivity().getMenuInflater().inflate(R.menu.cart_search_menu,menu);
     }
 
     @Override

@@ -74,4 +74,11 @@
     <string name="enter_location">Enter Location</string>
     <string name="enter_title">Enter title</string>
     <string name="login">Login</string>
+    <string name="shops">Shops</string>
+    <string name="notifications">Notifications</string>
+    <string name="bookings">Bookings</string>
+    <string name="schedule">Schedule</string>
+    <string name="account">Account</string>
+    <string name="logout">Logout</string>
+    <string name="purchases">Purchases</string>
 </resources>

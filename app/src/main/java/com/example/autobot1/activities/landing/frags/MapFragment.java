@@ -35,7 +35,10 @@ import com.directions.route.RoutingListener;
 import com.example.autobot1.R;
 import com.example.autobot1.activities.contact.Contact;
 import com.example.autobot1.activities.credentials.CredentialsActivity;
+import com.example.autobot1.activities.landing.MapActivity;
 import com.example.autobot1.activities.landing.viewmodels.MechanicShopsViewModel;
+import com.example.autobot1.activities.mechanics.frags.NotificationsFragment;
+import com.example.autobot1.databinding.HeaderLayoutBinding;
 import com.example.autobot1.models.Request;
 import com.example.autobot1.models.ShopItem;
 import com.example.autobot1.models.User;
@@ -57,6 +60,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.GeoApiContext;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +109,6 @@ public class MapFragment extends Fragment implements RoutingListener {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(MechanicShopsViewModel.class);
         client = LocationServices.getFusedLocationProviderClient(requireActivity());
-
         if (getArguments() != null) {
             latitude = getArguments().getDouble(LATITUDE);
             longitude = getArguments().getDouble(LONGITUDE);
@@ -145,7 +148,6 @@ public class MapFragment extends Fragment implements RoutingListener {
         } else {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 800);
         }
-        setHasOptionsMenu(true);
         return view;
     }
 
@@ -176,6 +178,7 @@ public class MapFragment extends Fragment implements RoutingListener {
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void populateMechanicMap(String uid, GoogleMap googleMap, Location location) {
         List<Request> bookings = getBookings(uid);
+        shops = getShopsAround();
         if (shops.isEmpty()) {
             Toast.makeText(requireContext(), "Clients found", Toast.LENGTH_SHORT).show();
         } else {
@@ -318,41 +321,10 @@ public class MapFragment extends Fragment implements RoutingListener {
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.logout) {
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(requireContext(), CredentialsActivity.class));
-
-        } else if (item.getItemId()==R.id.purchases){
-            Toast.makeText(requireContext(), "Purchases clicked", Toast.LENGTH_SHORT).show();
-        }
-        return true;
-    }
 
     /***
      * @author jamie@fortnox we will handle the search queries here
      */
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        requireActivity().getMenuInflater().inflate(R.menu.map_view_client_menu, menu);
-        MenuItem item = menu.findItem(R.id.search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
-        searchView.setQueryHint("Search by name or character...");
-        searchView.setPadding(10, 0, 10, 0);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public List<ShopItem> getShopsAround() {
