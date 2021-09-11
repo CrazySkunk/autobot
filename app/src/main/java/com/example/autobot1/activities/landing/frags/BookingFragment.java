@@ -1,6 +1,5 @@
 package com.example.autobot1.activities.landing.frags;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,12 +7,10 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.autobot1.R;
-import com.example.autobot1.activities.mechanics.MechanicsActivity;
 import com.example.autobot1.activities.mechanics.viewmodels.BookingsViewModel;
 import com.example.autobot1.adapters.BookingsAdapter;
 import com.example.autobot1.databinding.FragmentBookingBinding;

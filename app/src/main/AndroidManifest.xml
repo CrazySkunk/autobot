@@ -23,9 +23,6 @@
             android:name=".activities.mechanics.AddProductActivity"
             android:exported="true" />
         <activity
-            android:name=".activities.mechanics.MechanicsActivity"
-            android:exported="true" />
-        <activity
             android:name=".activities.credentials.CredentialsActivity"
             android:label="@string/title_activity_credentials"
             android:theme="@style/Theme.AutoBot1.NoActionBar" />

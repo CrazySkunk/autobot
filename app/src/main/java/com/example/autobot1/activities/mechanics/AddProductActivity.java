@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.example.autobot1.activities.landing.MapActivity;
 import com.example.autobot1.databinding.ActivityAddProductBinding;
 import com.example.autobot1.models.ProductItem;
 import com.google.firebase.auth.FirebaseAuth;
@@ -65,7 +66,7 @@ public class AddProductActivity extends AppCompatActivity {
                                             .setValue(item)
                                             .addOnCompleteListener(task1 -> {
                                                 if (task1.isSuccessful() && task1.isComplete()){
-                                                    startActivity(new Intent(AddProductActivity.this,MechanicsActivity.class));
+                                                    startActivity(new Intent(AddProductActivity.this, MapActivity.class));
                                                     finish();
                                                 }
                                             });
