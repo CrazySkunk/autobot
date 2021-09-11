@@ -2,9 +2,7 @@ package com.example.autobot1.activities.credentials.frags;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,28 +10,23 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.autobot1.R;
 import com.example.autobot1.activities.landing.MapActivity;
-import com.example.autobot1.activities.mechanics.MechanicsActivity;
 import com.example.autobot1.databinding.FragmentLoginBinding;
-import com.example.autobot1.models.User;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
 
 public class LoginFragment extends Fragment {
-    private static final String TAG = "LoginFragment";
     private FragmentLoginBinding binding;
     private Animation animation;
     private ProgressDialog progressDialog;
@@ -84,38 +77,44 @@ public class LoginFragment extends Fragment {
                         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                                 .addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
-                                        String uid = FirebaseAuth.getInstance().getUid();
-                                        FirebaseDatabase.getInstance().getReference("users")
-                                                .addValueEventListener(new ValueEventListener() {
-                                                    @RequiresApi(api = Build.VERSION_CODES.N)
-                                                    @Override
-                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                        snapshot.getChildren().forEach(user->{
-                                                            User u = user.getValue(User.class);
-                                                            if (u!=null){
-                                                                if (u.getUid().equals(uid)){
-                                                                    if (u.getAccountType().equals("Mechanic")){
-                                                                        requireActivity().startActivity(new Intent(requireContext(), MechanicsActivity.class));
-                                                                    }else {
-                                                                        requireActivity().startActivity(new Intent(requireContext(),MapActivity.class));
-                                                                    }
-                                                                    progressDialog.dismiss();
-                                                                    requireActivity().finish();
-                                                                }
-                                                            }
-                                                        });
-                                                    }
-
-                                                    @Override
-                                                    public void onCancelled(@NonNull DatabaseError error) {
-                                                        Log.i(TAG, "onCancelled: error -> "+error.getMessage());
-                                                    }
-                                                });
+                                        requireActivity().startActivity(new Intent(requireContext(), MapActivity.class));
                                     }
                                 });
                     }
                 }
             }
+        });
+        binding.forgotPasswordTv.setOnClickListener(passTv->{
+            EditText editText = new EditText(requireContext());
+            editText.setHint("Enter email address");
+            editText.setPadding(10,5,10,5);
+            editText.setMaxEms(100);
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext())
+                    .setTitle("AutoBot")
+                    .setView(editText)
+                    .setIcon(R.drawable.logo)
+                    .setCancelable(true)
+                    .setPositiveButton("Submit",(dialog,which)->{
+                        String email = editText.getText().toString().trim();
+                        if (email.isEmpty()){
+                            editText.setError("Cannot be empty!!");
+                            Snackbar.make(editText,"Please input an email address",Snackbar.LENGTH_LONG).setAnimationMode(Snackbar.ANIMATION_MODE_FADE).show();
+                        }else {
+                            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+                                editText.setError("Input a valid email address..");
+                                Snackbar.make(editText,"Please input a valid email address",Snackbar.LENGTH_LONG).setAnimationMode(Snackbar.ANIMATION_MODE_FADE).show();
+                            }else {
+                                FirebaseAuth.getInstance().sendPasswordResetEmail(email).addOnCompleteListener(task -> {
+                                    if (task.isSuccessful() && task.isSuccessful()){
+                                        Snackbar.make(editText,"Reset link sent to your email...",Snackbar.LENGTH_LONG)
+                                                .setAnimationMode(Snackbar.ANIMATION_MODE_FADE).show();
+                                    }
+                                });
+                            }
+                        }
+                    });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
         });
     }
 

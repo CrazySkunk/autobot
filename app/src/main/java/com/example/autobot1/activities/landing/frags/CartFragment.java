@@ -1,5 +1,6 @@
 package com.example.autobot1.activities.landing.frags;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,7 +11,10 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,14 +26,17 @@ import com.example.autobot1.databinding.CartItemBinding;
 import com.example.autobot1.databinding.FragmentCartBinding;
 import com.example.autobot1.models.ProductItemCart;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CartFragment extends Fragment {
     private FragmentCartBinding binding;
     private CartViewModel cartViewModel;
+    private List<ProductItemCart> searchProduct;
 
     public CartFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,6 +55,51 @@ public class CartFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         requireActivity().getMenuInflater().inflate(R.menu.cart_search_menu, menu);
+        MenuItem item = menu.findItem(R.id.search_cart);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+        searchView.setQueryHint("Search cart...");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                List<ProductItemCart> searches = new ArrayList<>();
+                searchProduct.forEach(search->{
+                    if (search.getTitle().contains(newText) || search.getDescription().contains(newText) || search.getPrice().contains(newText)){
+                        searches.add(search);
+                    }
+                });
+                if (searches.isEmpty()) {
+                    binding.noItemInCartTv.setVisibility(View.VISIBLE);
+                    binding.noItemsInCartIv.setVisibility(View.VISIBLE);
+                    binding.cartRecycler.setVisibility(View.GONE);
+                } else {
+                    binding.noItemInCartTv.setVisibility(View.GONE);
+                    binding.noItemsInCartIv.setVisibility(View.GONE);
+                    binding.cartRecycler.setVisibility(View.VISIBLE);
+                    CartAdapter cartAdapter = new CartAdapter(searches);
+                    binding.cartRecycler.setHasFixedSize(true);
+                    binding.cartRecycler.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
+                    binding.cartRecycler.setClipToPadding(false);
+                    binding.cartRecycler.setAdapter(cartAdapter);
+                    cartAdapter.setOnItemClickListener((position, view, v) -> {
+                        CartItemBinding binding = CartItemBinding.bind(view);
+                        if (v == binding.increment) {
+                            increment(searches.get(position));
+                        } else if (v == binding.decrement) {
+                            decrement(searches.get(position));
+                        } else if (v == binding.deleteProduct) {
+                            deleteProduct(searches.get(position));
+                        }
+                    });
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -79,6 +131,7 @@ public class CartFragment extends Fragment {
                 binding.noItemsInCartIv.setVisibility(View.VISIBLE);
                 binding.cartRecycler.setVisibility(View.GONE);
             } else {
+                searchProduct = cartItems;
                 binding.noItemInCartTv.setVisibility(View.GONE);
                 binding.noItemsInCartIv.setVisibility(View.GONE);
                 binding.cartRecycler.setVisibility(View.VISIBLE);

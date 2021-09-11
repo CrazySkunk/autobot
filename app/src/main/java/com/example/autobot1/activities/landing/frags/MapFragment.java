@@ -33,12 +33,9 @@ import com.directions.route.RouteException;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
 import com.example.autobot1.R;
-import com.example.autobot1.activities.contact.Contact;
-import com.example.autobot1.activities.credentials.CredentialsActivity;
-import com.example.autobot1.activities.landing.MapActivity;
 import com.example.autobot1.activities.landing.viewmodels.MechanicShopsViewModel;
-import com.example.autobot1.activities.mechanics.frags.NotificationsFragment;
-import com.example.autobot1.databinding.HeaderLayoutBinding;
+import com.example.autobot1.databinding.CustomMapDialogBinding;
+import com.example.autobot1.databinding.FragmentBookingBinding;
 import com.example.autobot1.models.Request;
 import com.example.autobot1.models.ShopItem;
 import com.example.autobot1.models.User;
@@ -47,12 +44,14 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -60,17 +59,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.GeoApiContext;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapFragment extends Fragment implements RoutingListener {
+public class MapFragment extends Fragment implements RoutingListener, OnMapReadyCallback {
 
     private static final String LATITUDE = "latitude";
     private static final String LONGITUDE = "longitude";
     private static final String UID = "uid";
     public static final String TAG = "Map fragment";
+    private FragmentBookingBinding binding;
     private FusedLocationProviderClient client;
     private SupportMapFragment fragment;
     protected MechanicShopsViewModel viewModel;
@@ -78,16 +77,15 @@ public class MapFragment extends Fragment implements RoutingListener {
     private GoogleMap map;
     private double latitude;
     private double longitude;
+    private User mUser;
     private String uid;
-    private double mLatitude;
-    private double mLongitude;
     private LatLng start;
     private LatLng end;
     private View view;
-    private String number;
     private GeoApiContext geoApiContext;
     private Request booking;
-    private List<Polyline> polylines = null;
+    private List<Polyline> polyLines = null;
+    private List<ShopItem> shopItemListGlobal;
 
 
     public MapFragment() {
@@ -109,6 +107,7 @@ public class MapFragment extends Fragment implements RoutingListener {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(MechanicShopsViewModel.class);
         client = LocationServices.getFusedLocationProviderClient(requireActivity());
+        getTypeOfUser(FirebaseAuth.getInstance().getUid());
         if (getArguments() != null) {
             latitude = getArguments().getDouble(LATITUDE);
             longitude = getArguments().getDouble(LONGITUDE);
@@ -118,26 +117,16 @@ public class MapFragment extends Fragment implements RoutingListener {
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentBookingBinding.inflate(inflater, container, false);
         view = inflater.inflate(R.layout.fragment_map, container, false);
         fragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.google_map);
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             @SuppressLint("MissingPermission") Task<Location> task = client.getLastLocation();
             task.addOnSuccessListener(location -> {
                 if (location != null) {
-                    fragment.getMapAsync(googleMap -> {
-                        map = googleMap;
-                        start = new LatLng(location.getLatitude(), location.getLongitude());
-                        MarkerOptions markerOptions = new MarkerOptions()
-                                .position(start)
-                                .title("My position")
-                                .snippet("Iam here");
-                        googleMap.addMarker(markerOptions);
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(start, 10));
-                        if (booking == null) {
-                            getTypeOfUser(FirebaseAuth.getInstance().getUid(), googleMap, location);
-                        }
-                    });
+                    start = new LatLng(location.getLatitude(), location.getLongitude());
+                    fragment.getMapAsync(this);
                     if (geoApiContext == null) {
                         geoApiContext = new GeoApiContext.Builder()
                                 .apiKey(String.valueOf(R.string.google_maps_key))
@@ -148,10 +137,53 @@ public class MapFragment extends Fragment implements RoutingListener {
         } else {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 800);
         }
-        return view;
+        setHasOptionsMenu(true);
+        return binding.getRoot();
     }
 
-    private void getTypeOfUser(String uid, GoogleMap googleMap, Location location) {
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        map = googleMap;
+        MarkerOptions markerOptions = new MarkerOptions()
+                .position(start)
+                .title("My position")
+                .snippet("Iam here");
+        googleMap.addMarker(markerOptions);
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(start, 10));
+        populateMap();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        requireActivity().getMenuInflater().inflate(R.menu.map_view_search_menu, menu);
+        MenuItem item = menu.findItem(R.id.search_map);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+        searchView.setQueryHint("Search name");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                List<ShopItem>searches = new ArrayList<>();
+                shopItemListGlobal.forEach(shopItem -> {
+                    if (shopItem.getTitle().contains(newText) || shopItem.getDescription().contains(newText) || shopItem.getContact().contains(newText)
+                            || String.valueOf(shopItem.getLatitude()).contains(newText) || String.valueOf(shopItem.getLongitude()).contains(newText)){
+                        searches.add(shopItem);
+                    }
+                });
+                populateMapSearch(searches);
+                return true;
+            }
+        });
+    }
+
+    private void getTypeOfUser(String uid) {
         FirebaseDatabase.getInstance().getReference("users")
                 .addValueEventListener(new ValueEventListener() {
                     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -159,12 +191,11 @@ public class MapFragment extends Fragment implements RoutingListener {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         snapshot.getChildren().forEach(user -> {
                             User user1 = user.getValue(User.class);
-                            if (user1 != null)
-                                if (user1.getUid().equals(uid) && user1.getAccountType().equals("Mechanic")) {
-                                    populateMechanicMap(user1.getUid(), googleMap, location);
-                                } else {
-                                    populateUserMap(googleMap, location);
+                            if (user1 != null) {
+                                if (user1.getUid().equals(uid)) {
+                                    mUser = user1;
                                 }
+                            }
                         });
                     }
 
@@ -176,45 +207,41 @@ public class MapFragment extends Fragment implements RoutingListener {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private void populateMechanicMap(String uid, GoogleMap googleMap, Location location) {
-        List<Request> bookings = getBookings(uid);
+    private void populateMap() {
         shops = getShopsAround();
         if (shops.isEmpty()) {
-            Toast.makeText(requireContext(), "Clients found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Clients not found", Toast.LENGTH_SHORT).show();
         } else {
-            for (Request shop : bookings) {
+            for (ShopItem shop : shops) {
                 if (shop != null) {
-                    googleMap.addMarker(new MarkerOptions()
+                    map.addMarker(new MarkerOptions()
                             .position(new LatLng(
-                                    shop.getLocation().latitude,
-                                    shop.getLocation().longitude
+                                    shop.getLatitude(),
+                                    shop.getLongitude()
                             ))
-                            .title(shop.getFromName())
-                            .snippet("Client"));
-                    googleMap.setOnInfoWindowClickListener(marker -> {
+                            .title(shop.getTitle())
+                            .snippet(shop.getDescription()));
+                    map.setOnInfoWindowClickListener(marker -> {
                         LatLng pos = marker.getPosition();
                         shops.forEach(shop1 -> {
-                            if (shop1.getLocation().equals(pos)) {
+                            if (new LatLng(shop1.getLatitude(),shop1.getLongitude()).equals(pos)) {
+                                end = pos;
                                 View v = LayoutInflater.from(requireContext()).inflate(R.layout.custom_map_dialog, null, false);
                                 AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-                                TextView title = v.findViewById(R.id.shop_title_text_view);
-                                TextView description = v.findViewById(R.id.map_dialog_description_tv);
-                                Button email = v.findViewById(R.id.map_dialog_email_btn);
-                                Button call = v.findViewById(R.id.map_dialog_call_btn);
-                                Button getDirections = v.findViewById(R.id.map_dialog_direction_btn);
-                                title.setText(shop1.getTitle());
-                                description.setText(shop1.getDescription());
-                                email.setOnClickListener(view1 -> {
+                                CustomMapDialogBinding binding = CustomMapDialogBinding.bind(v);
+                                binding.mapDialogTitleTv.setText(shop1.getTitle());
+                                binding.mapDialogDescriptionTv.setText(shop1.getDescription());
+                                binding.mapDialogEmailBtn.setOnClickListener(view1 -> {
                                     Intent intent = new Intent(Intent.CATEGORY_APP_EMAIL);
                                     intent.putExtra("email_address", shop1.getContact());
                                     startActivity(intent);
                                 });
-                                call.setOnClickListener(view12 -> {
+                                binding.mapDialogCallBtn.setOnClickListener(view12 -> {
                                     Intent intent = new Intent(Intent.ACTION_CALL);
                                     intent.putExtra("number", shop1.getContact());
                                     startActivity(intent);
                                 });
-                                getDirections.setOnClickListener(view13 -> findRoutes(start, end));
+                                binding.mapDialogDirectionBtn.setOnClickListener(view13 -> findRoutes(start, end));
                                 builder.setCancelable(true);
                                 builder.setView(v);
                                 AlertDialog alertDialog = builder.create();
@@ -225,121 +252,71 @@ public class MapFragment extends Fragment implements RoutingListener {
                 }
             }
         }
-        LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
-        mLatitude = location.getLatitude();
-        mLongitude = location.getLongitude();
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-        Log.i(TAG, "onMapReady: lat:" + location.getLatitude() + " long:" + location.getLongitude());
-        MarkerOptions options = new MarkerOptions();
-        options.position(pos);
-        options.title("My position");
-        options.snippet("Iam here");
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 10));
-        googleMap.addMarker(options);
     }
-
-    private List<Request> getBookings(String uid) {
-        List<Request> bookings = new ArrayList<>();
-        FirebaseDatabase.getInstance().getReference("booking-request/" + uid)
-                .addValueEventListener(new ValueEventListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.N)
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        snapshot.getChildren().forEach(request -> {
-                            Request booking = request.getValue(Request.class);
-                            bookings.add(booking);
-                        });
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Log.i(TAG, "onCancelled: getBookings -> " + error.getMessage());
-                    }
-                });
-        return bookings;
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private void populateUserMap(GoogleMap googleMap, Location location) {
-        shops = getShopsAround();
+    private void populateMapSearch(List<ShopItem>shopItemList) {
+        shops = shopItemList;
         if (shops.isEmpty()) {
-            Toast.makeText(requireContext(), "No shops found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Clients not found", Toast.LENGTH_SHORT).show();
         } else {
             for (ShopItem shop : shops) {
                 if (shop != null) {
-                    googleMap.addMarker(new MarkerOptions()
+                    map.addMarker(new MarkerOptions()
                             .position(new LatLng(
-                                    shop.getLocation().latitude,
-                                    shop.getLocation().longitude
+                                    shop.getLatitude(),
+                                    shop.getLongitude()
                             ))
                             .title(shop.getTitle())
-                            .snippet(shop.getDescription().substring(0, 10)));
-                    googleMap.setOnMapClickListener(
-                            latLng -> shops.forEach(shop1 -> {
-                                if (new LatLng(shop1.getLocation().latitude, shop.getLocation().longitude).equals(latLng)) {
-                                    View v = LayoutInflater.from(requireContext()).inflate(R.layout.custom_map_dialog, null, false);
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-                                    TextView title = v.findViewById(R.id.shop_title_text_view);
-                                    TextView description = v.findViewById(R.id.map_dialog_description_tv);
-                                    Button email = v.findViewById(R.id.map_dialog_email_btn);
-                                    Button call = v.findViewById(R.id.map_dialog_call_btn);
-                                    Button getDirections = v.findViewById(R.id.map_dialog_direction_btn);
-                                    getDirections.setVisibility(View.GONE);
-                                    title.setText(shop1.getTitle());
-                                    description.setText(shop1.getDescription());
-                                    email.setOnClickListener(view1 -> {
-                                        requireActivity().startActivity(new Intent(requireContext(), Contact.class).putExtra("shop", shop1));
-                                    });
-                                    call.setOnClickListener(view12 -> {
-                                        Intent intent = new Intent(Intent.ACTION_CALL);
-                                        intent.putExtra("number", shop1.getContact());
-                                        startActivity(intent);
-                                    });
-                                    getDirections.setOnClickListener(view13 -> findRoutes(new LatLng(location.getLatitude(), location.getLongitude()), new LatLng(shop1.getLocation().latitude, shop1.getLocation().longitude)));
-                                    builder.setCancelable(true);
-                                    builder.setView(v);
-                                    AlertDialog alertDialog = builder.create();
-                                    alertDialog.show();
-                                }
-                            }));
+                            .snippet(shop.getDescription()));
+                    map.setOnInfoWindowClickListener(marker -> {
+                        LatLng pos = marker.getPosition();
+                        shops.forEach(shop1 -> {
+                            if (new LatLng(shop1.getLatitude(),shop1.getLongitude()).equals(pos)) {
+                                end = pos;
+                                View v = LayoutInflater.from(requireContext()).inflate(R.layout.custom_map_dialog, null, false);
+                                AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                                CustomMapDialogBinding binding = CustomMapDialogBinding.bind(v);
+                                binding.mapDialogTitleTv.setText(shop1.getTitle());
+                                binding.mapDialogDescriptionTv.setText(shop1.getDescription());
+                                binding.mapDialogEmailBtn.setOnClickListener(view1 -> {
+                                    Intent intent = new Intent(Intent.CATEGORY_APP_EMAIL);
+                                    intent.putExtra("email_address", shop1.getContact());
+                                    startActivity(intent);
+                                });
+                                binding.mapDialogCallBtn.setOnClickListener(view12 -> {
+                                    Intent intent = new Intent(Intent.ACTION_CALL);
+                                    intent.putExtra("number", shop1.getContact());
+                                    startActivity(intent);
+                                });
+                                binding.mapDialogDirectionBtn.setOnClickListener(view13 -> findRoutes(start, end));
+                                builder.setCancelable(true);
+                                builder.setView(v);
+                                AlertDialog alertDialog = builder.create();
+                                alertDialog.show();
+                            }
+                        });
+                    });
                 }
             }
         }
-        LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
-        mLatitude = location.getLatitude();
-        mLongitude = location.getLongitude();
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-        Log.i(TAG, "onMapReady: lat:" + location.getLatitude() + " long:" + location.getLongitude());
-        MarkerOptions options = new MarkerOptions();
-        options.position(pos);
-        options.title("My position");
-        options.snippet("Iam here");
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 10));
-        googleMap.addMarker(options);
     }
 
-
-
-    /***
-     * @author jamie@fortnox we will handle the search queries here
-     */
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public List<ShopItem> getShopsAround() {
         List<ShopItem> shopItemList = new ArrayList<>();
         viewModel.getShops().observe(getViewLifecycleOwner(), shopItems ->
                 shopItems.forEach(shopItem -> {
-                    if (shopItem.getLocation().latitude == latitude + 0.5 && shopItem.getLocation().longitude == longitude + 0.5) {
+                    shopItemListGlobal = shopItems;
+                    if (shopItem.getLatitude() == latitude + 0.5 && shopItem.getLongitude() == longitude + 0.5) {
                         shopItemList.add(shopItem);
-                    } else if (shopItem.getLocation().latitude == latitude + 0.4 && shopItem.getLocation().longitude == longitude + 0.4) {
+                    } else if (shopItem.getLatitude() == latitude + 0.4 && shopItem.getLongitude() == longitude + 0.4) {
                         shopItemList.add(shopItem);
-                    } else if (shopItem.getLocation().latitude == latitude + 0.3 && shopItem.getLocation().longitude == longitude + 0.3) {
+                    } else if (shopItem.getLatitude() == latitude + 0.3 && shopItem.getLongitude() == longitude + 0.3) {
                         shopItemList.add(shopItem);
-                    } else if (shopItem.getLocation().latitude == latitude + 0.2 && shopItem.getLocation().longitude == longitude + 0.2) {
+                    } else if (shopItem.getLatitude() == latitude + 0.2 && shopItem.getLongitude() == longitude + 0.2) {
                         shopItemList.add(shopItem);
-                    } else if (shopItem.getLocation().latitude == latitude + 0.1 && shopItem.getLocation().longitude == longitude + 0.1) {
+                    } else if (shopItem.getLatitude() == latitude + 0.1 && shopItem.getLongitude() == longitude + 0.1) {
                         shopItemList.add(shopItem);
                     }
                 }));
@@ -363,7 +340,7 @@ public class MapFragment extends Fragment implements RoutingListener {
                         options.snippet("Iam here");
                         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 10));
                         googleMap.addMarker(options);
-                        getTypeOfUser(FirebaseAuth.getInstance().getUid(), googleMap, location);
+                        getTypeOfUser(FirebaseAuth.getInstance().getUid());
                     });
                 }
             });
@@ -377,9 +354,8 @@ public class MapFragment extends Fragment implements RoutingListener {
 
     public void findRoutes(LatLng Start, LatLng End) {
         if (Start == null || End == null) {
-            Toast.makeText(requireContext(), "Unable to get location", Toast.LENGTH_LONG).show();
+            Snackbar.make(binding.getRoot(), "Unable to get location", Snackbar.LENGTH_LONG).setAnimationMode(Snackbar.ANIMATION_MODE_FADE).show();
         } else {
-
             Routing routing = new Routing.Builder()
                     .travelMode(AbstractRouting.TravelMode.DRIVING)
                     .withListener(this)
@@ -391,7 +367,7 @@ public class MapFragment extends Fragment implements RoutingListener {
         }
     }
 
-    //Routing call back functions.
+    //Routing callback functions.
     @Override
     public void onRoutingFailure(RouteException e) {
         View parentLayout = view.findViewById(R.id.parent_layout);
@@ -403,25 +379,21 @@ public class MapFragment extends Fragment implements RoutingListener {
 
     @Override
     public void onRoutingStart() {
-
+        Snackbar.make(binding.getRoot(), "Routing...", Snackbar.LENGTH_LONG).setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_FADE).show();
     }
 
     @Override
     public void onRoutingSuccess(ArrayList<Route> arrayList, int shortestRouteIndex) {
-
-        CameraUpdate center = CameraUpdateFactory.newLatLng(start);
-        CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
-        if (polylines != null) {
-            polylines.clear();
+        CameraUpdateFactory.newLatLngZoom(start, 15);
+        if (polyLines != null) {
+            polyLines.clear();
         }
         PolylineOptions polyOptions = new PolylineOptions();
         LatLng polylineStartLatLng = null;
         LatLng polylineEndLatLng = null;
-
-        polylines = new ArrayList<>();
+        polyLines = new ArrayList<>();
         //add route(s) to the map using polyline
         for (int i = 0; i < arrayList.size(); i++) {
-
             if (i == shortestRouteIndex) {
                 polyOptions.color(getResources().getColor(R.color.colorPrimary));
                 polyOptions.width(7);
@@ -430,32 +402,40 @@ public class MapFragment extends Fragment implements RoutingListener {
                 polylineStartLatLng = polyline.getPoints().get(0);
                 int k = polyline.getPoints().size();
                 polylineEndLatLng = polyline.getPoints().get(k - 1);
-                polylines.add(polyline);
+                polyLines.add(polyline);
 
             } else {
                 Toast.makeText(requireContext(), "Rerouting...", Toast.LENGTH_SHORT).show();
             }
-
         }
 
         //Add Marker on route starting position
         MarkerOptions startMarker = new MarkerOptions();
-        startMarker.position(polylineStartLatLng);
+        if (polylineStartLatLng != null) {
+            startMarker.position(polylineStartLatLng);
+        }
         startMarker.title("My Location");
         map.addMarker(startMarker);
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(start, 10));
 
         //Add Marker on route ending position
         MarkerOptions endMarker = new MarkerOptions();
-        endMarker.position(polylineEndLatLng);
+        if (polylineEndLatLng != null) {
+            endMarker.position(polylineEndLatLng);
+        }
         endMarker.title("Destination");
         map.addMarker(endMarker);
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(start, 10));
-
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(end, 10));
     }
 
     @Override
     public void onRoutingCancelled() {
         findRoutes(start, end);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

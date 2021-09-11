@@ -1,5 +1,6 @@
 package com.example.autobot1.activities.landing.frags;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -9,8 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -23,6 +26,7 @@ import com.example.autobot1.databinding.FragmentMechanicShopsBinding;
 import com.example.autobot1.models.RecentShopItem;
 import com.example.autobot1.models.ShopItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -31,6 +35,7 @@ public class MechanicShopsFragment extends Fragment {
     private FragmentMechanicShopsBinding binding;
     private MechanicShopsViewModel viewModel;
     private RecentShopsViewModel recentShopsViewModel;
+    private List<ShopItem> shops;
 
     public MechanicShopsFragment() {
         // Required empty public constructor
@@ -39,6 +44,7 @@ public class MechanicShopsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        shops = new ArrayList<>();
         viewModel = new ViewModelProvider(this).get(MechanicShopsViewModel.class);
         recentShopsViewModel = new ViewModelProvider(this).get(RecentShopsViewModel.class);
     }
@@ -46,8 +52,7 @@ public class MechanicShopsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentMechanicShopsBinding.inflate(inflater, container, false);
-        MutableLiveData<List<ShopItem>> shops = viewModel.getShops();
-        shops.observe(getViewLifecycleOwner(), shopItems -> {
+        viewModel.getShops().observe(getViewLifecycleOwner(), shopItems -> {
             if (shopItems.isEmpty()) {
                 binding.emptyTrayIv.setVisibility(View.VISIBLE);
                 binding.emptyTrayTv.setVisibility(View.VISIBLE);
@@ -55,6 +60,7 @@ public class MechanicShopsFragment extends Fragment {
             } else {
                 shopsRecycler = binding.shopsRecycler;
                 ShopAdapter shopAdapter = new ShopAdapter(shopItems);
+                shops = shopItems;
                 shopsRecycler.setLayoutManager(new StaggeredGridLayoutManager(2, RecyclerView.VERTICAL));
                 shopsRecycler.setClipToPadding(false);
                 shopsRecycler.hasFixedSize();
@@ -70,12 +76,10 @@ public class MechanicShopsFragment extends Fragment {
                             shopItems.get(position).getDescription(),
                             shopItems.get(position).getImageUrl(),
                             shopItems.get(position).getContact(),
-                            String.valueOf(shopItems.get(position).getLocation().latitude),
-                            String.valueOf(shopItems.get(position).getLocation().longitude),
+                            String.valueOf(shopItems.get(position).getLatitude()),
+                            String.valueOf(shopItems.get(position).getLongitude()),
                             false));
                 });
-
-
             }
         });
 
@@ -86,7 +90,49 @@ public class MechanicShopsFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        requireActivity().getMenuInflater().inflate(R.menu.main_menu, menu);
+        requireActivity().getMenuInflater().inflate(R.menu.mechanic_search_menu, menu);
+        MenuItem item = menu.findItem(R.id.search_mechanic);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+        searchView.setQueryHint("Search shop....");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                List<ShopItem> shopItemList=new ArrayList<>();
+                shops.forEach(shopItem -> {
+                    if (shopItem.getTitle().contains(newText) || shopItem.getDescription().contains(newText) || shopItem.getContact().contains(newText)
+                            || String.valueOf(shopItem.getLatitude()).contains(newText) || String.valueOf(shopItem.getLongitude()).contains(newText)){
+                        shopItemList.add(shopItem);
+                    }
+                });
+                ShopAdapter shopAdapter = new ShopAdapter(shopItemList);
+                shopsRecycler.setLayoutManager(new StaggeredGridLayoutManager(2, RecyclerView.VERTICAL));
+                shopsRecycler.setClipToPadding(false);
+                shopsRecycler.hasFixedSize();
+                shopsRecycler.setAdapter(shopAdapter);
+                shopAdapter.setOnItemClickListener(position -> {
+                    requireActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.nav_host_fragment_container,
+                                    SpecificShopFragment.newInstance(shopItemList.get(position).getTitle()));
+                    recentShopsViewModel.addRecentShop(new RecentShopItem(
+                            0,
+                            shopItemList.get(position).getTitle(),
+                            shopItemList.get(position).getDescription(),
+                            shopItemList.get(position).getImageUrl(),
+                            shopItemList.get(position).getContact(),
+                            String.valueOf(shopItemList.get(position).getLatitude()),
+                            String.valueOf(shopItemList.get(position).getLongitude()),
+                            false));
+                });
+                return true;
+            }
+        });
     }
 
     @Override

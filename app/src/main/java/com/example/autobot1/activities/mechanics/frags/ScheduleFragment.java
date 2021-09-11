@@ -60,9 +60,7 @@ public class ScheduleFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentScheduleBinding.inflate(inflater, container, false);
         inflateListView();
-        binding.addScheduleFab.setOnClickListener(view -> {
-            startActivity(new Intent(requireContext(), ScheduleItemLayout.class));
-        });
+        binding.addScheduleFab.setOnClickListener(view -> startActivity(new Intent(requireContext(), ScheduleItemLayout.class)));
         return binding.getRoot();
     }
 

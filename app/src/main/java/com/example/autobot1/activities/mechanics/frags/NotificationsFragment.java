@@ -71,6 +71,7 @@ public class NotificationsFragment extends Fragment {
 
     private void doDelete(CharSequence title) {
         Toast.makeText(requireContext(), "Delete " + title + " clicked", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override

@@ -51,12 +51,15 @@
         <entry key="app/src/main/res/layout/schedule_item_layout.xml" value="0.3614583333333333" />
         <entry key="app/src/main/res/layout/shop_item.xml" value="0.3541666666666667" />
         <entry key="app/src/main/res/menu/cart_menu.xml" value="0.3614583333333333" />
+        <entry key="app/src/main/res/menu/cart_search_menu.xml" value="0.3614583333333333" />
         <entry key="app/src/main/res/menu/drawer_menu.xml" value="0.3541666666666667" />
         <entry key="app/src/main/res/menu/fav_menu.xml" value="0.3614583333333333" />
-        <entry key="app/src/main/res/menu/main_menu.xml" value="0.3614583333333333" />
+        <entry key="app/src/main/res/menu/fav_search_menu.xml" value="0.3614583333333333" />
+        <entry key="app/src/main/res/menu/main_menu.xml" value="0.1" />
         <entry key="app/src/main/res/menu/map_view_client_menu.xml" value="0.3614583333333333" />
         <entry key="app/src/main/res/menu/map_view_mechanic_menu.xml" value="0.3671875" />
         <entry key="app/src/main/res/menu/map_view_menu.xml" value="0.3671875" />
+        <entry key="app/src/main/res/menu/map_view_search_menu.xml" value="0.19791666666666666" />
         <entry key="app/src/main/res/menu/mech_menu.xml" value="0.33" />
         <entry key="app/src/main/res/menu/mechanic_search_menu.xml" value="0.3614583333333333" />
         <entry key="app/src/main/res/menu/mechanic_shop_menu.xml" value="0.3671875" />

@@ -10,11 +10,13 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class ShopItem implements Parcelable {
     private String title, description,imageUrl,contact;
-    private LatLng location;
+    private double latitude;
+    private double longitude;
 
-    public ShopItem(String title, LatLng location, String description,String imageUrl,String contact) {
+    public ShopItem(String title, double latitude, double longitude,String description,String imageUrl,String contact) {
         this.title = title;
-        this.location = location;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.description = description;
         this.imageUrl = imageUrl;
         this.contact = contact;
@@ -23,6 +25,8 @@ public class ShopItem implements Parcelable {
 
     protected ShopItem(Parcel in) {
         title = in.readString();
+        latitude = in.readDouble();
+        longitude = in.readDouble();
         description = in.readString();
         imageUrl = in.readString();
         contact = in.readString();
@@ -61,12 +65,19 @@ public class ShopItem implements Parcelable {
         this.title = title;
     }
 
-    public LatLng getLocation() {
-        return location;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setLocation(LatLng location) {
-        this.location = location;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+    public double getLongitude() {
+        return latitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public String getDescription() {
