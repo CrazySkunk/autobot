@@ -29,16 +29,13 @@ public class IntroScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
-
         //Animations
         topAnim = AnimationUtils.loadAnimation(this, R.anim.top_animation);
         bottomAnim = AnimationUtils.loadAnimation(this, R.anim.bottom_animation);
-
         //Hooks
         image = findViewById(R.id.imageView2);
         logo = findViewById(R.id.textView3);
         slogan = findViewById(R.id.textView5);
-
         image.setAnimation(topAnim);
         logo.setAnimation(bottomAnim);
         slogan.setAnimation(bottomAnim);
@@ -52,6 +49,5 @@ public class IntroScreen extends AppCompatActivity {
             }
             finish();
         }, SPLASH_SCREEN);
-
     }
 }
