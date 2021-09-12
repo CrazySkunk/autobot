@@ -50,7 +50,7 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ShopViewHolder
         holder.bind(shopItems.get(position));
         holder.binding.favIcon.setOnClickListener(view -> {
             ShopItem item = shopItems.get(position);
-            viewModel.addCartItem(new ShopItemFav(0, item.getTitle(), String.valueOf(item.getLocation().latitude), String.valueOf(item.getLocation().longitude), item.getDescription(), item.getImageUrl(), item.getContact(), true));
+            viewModel.addCartItem(new ShopItemFav(0, item.getTitle(), String.valueOf(item.getLatitude()), String.valueOf(item.getLongitude()), item.getDescription(), item.getImageUrl(), item.getContact(), true));
         });
     }
 
@@ -75,7 +75,7 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ShopViewHolder
 
         public void bind(ShopItem shopItem) {
             binding.shopTitleTextView.setText(shopItem.getTitle());
-            binding.shopLocationTextView.setText(String.format("lat: %s,long: %s", shopItem.getLocation().latitude, shopItem.getLocation().longitude));
+            binding.shopLocationTextView.setText(String.format("lat: %s,long: %s", shopItem.getLatitude(), shopItem.getLongitude()));
             binding.shopDescriptionTextView.setText(shopItem.getDescription());
             Picasso.get().load(shopItem.getImageUrl()).placeholder(R.drawable.bot).into(binding.shopItemImageView);
         }

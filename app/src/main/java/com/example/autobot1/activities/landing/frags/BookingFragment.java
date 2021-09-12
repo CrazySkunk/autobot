@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.autobot1.R;
+import com.example.autobot1.activities.landing.MapActivity;
 import com.example.autobot1.activities.mechanics.viewmodels.BookingsViewModel;
 import com.example.autobot1.adapters.BookingsAdapter;
 import com.example.autobot1.databinding.FragmentBookingBinding;
@@ -52,7 +53,7 @@ public class BookingFragment extends Fragment {
                 adapter = new BookingsAdapter(requireContext(), resource, bookings);
                 listView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
-                adapter.setOnItemClickListener(position -> ((MechanicsActivity) requireActivity()).setMapSelected());
+//                adapter.setOnItemClickListener(position -> ((MapActivity) requireActivity()).setMapSelected());
             }
         });
     }
@@ -60,16 +61,6 @@ public class BookingFragment extends Fragment {
     public interface SendMessage {
         void sendData(Request message);
     }
-
-//    @Override
-//    public void onAttach(@NonNull Context context) {
-//        super.onAttach(context);
-//        try {
-//            SM = (SendMessage) getActivity();
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException("Error in retrieving data. Please try again");
-//        }
-//    }
 
     @Override
     public void onDestroy() {

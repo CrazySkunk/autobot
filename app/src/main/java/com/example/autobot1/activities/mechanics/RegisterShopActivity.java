@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.example.autobot1.activities.landing.MapActivity;
 import com.example.autobot1.databinding.ActivityRegisterShopBinding;
 import com.example.autobot1.models.ShopItem;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -93,7 +94,7 @@ public class RegisterShopActivity extends AppCompatActivity {
                     reference.putFile(imageUri)
                             .addOnSuccessListener(taskSnapshot -> reference.getDownloadUrl().addOnSuccessListener(uri -> {
                                 com.google.android.gms.maps.model.LatLng loc = new com.google.android.gms.maps.model.LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
-                                ShopItem shopItem = new ShopItem(name, loc, description, uri.toString(), contact);
+                                ShopItem shopItem = new ShopItem(name, loc.latitude,loc.longitude, description, uri.toString(), contact);
                                 uploadShop(shopItem);
                             }));
                 }
@@ -105,7 +106,7 @@ public class RegisterShopActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference("shops/" + FirebaseAuth.getInstance().getUid())
                 .setValue(shopItem).addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.isComplete()) {
-                        startActivity(new Intent(RegisterShopActivity.this, MechanicsActivity.class));
+                        startActivity(new Intent(RegisterShopActivity.this, MapActivity.class));
                         finish();
                     }
                 });
