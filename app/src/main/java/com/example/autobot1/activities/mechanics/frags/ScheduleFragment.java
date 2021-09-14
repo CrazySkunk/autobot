@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.autobot1.R;
+import com.example.autobot1.activities.landing.frags.MapFragment;
 import com.example.autobot1.activities.landing.frags.ScheduleItemLayout;
 import com.example.autobot1.activities.mechanics.models.Bookings;
 import com.example.autobot1.activities.mechanics.viewmodels.BookingsViewModel;
@@ -78,6 +79,16 @@ public class ScheduleFragment extends Fragment {
                 binding.lvSchedules.setVisibility(View.VISIBLE);
                 BookingsAdapter adapter = new BookingsAdapter(requireContext(), resource, bookings);
                 listView.setAdapter(adapter);
+                adapter.setOnItemClickListener(new BookingsAdapter.OnItemClick() {
+                    @Override
+                    public void onItemClick(int position) {
+                        requireActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.frame_layout,
+                                        MapFragment.newInstance(String.valueOf(bookings.get(position).getLatitude()),String.valueOf(bookings.get(position).getLongitude()),bookings.get(position).getFrom()))
+                                .commit();
+                    }
+                });
             }
         });
 

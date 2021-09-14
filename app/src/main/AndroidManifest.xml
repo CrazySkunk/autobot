@@ -27,6 +27,24 @@
             android:label="@string/title_activity_credentials"
             android:theme="@style/Theme.AutoBot1.NoActionBar" />
         <activity android:name=".activities.landing.MapActivity" />
+        <activity android:name=".activities.landing.frags.ScheduleItemLayout"/>
+        <activity android:name=".activities.mechanics.RegisterShopActivity"/>
+        <service
+            android:name=".notification.MyFirebaseMessaging"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".notification.InstanceIdService"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

@@ -42,12 +42,12 @@ public class NotificationsFragment extends Fragment {
             if (notifications.isEmpty()) {
                 binding.noNotificationsYetIm.setVisibility(View.VISIBLE);
                 binding.noNotificationsYetTv.setVisibility(View.VISIBLE);
-                binding.noNotificationsYetTv.setVisibility(View.GONE);
+                binding.notificationLv.setVisibility(View.GONE);
             } else {
                 adapter = new NotificationAdapter(requireContext(), R.layout.notification_item, notifications);
                 binding.noNotificationsYetIm.setVisibility(View.GONE);
                 binding.noNotificationsYetTv.setVisibility(View.GONE);
-                binding.noNotificationsYetTv.setVisibility(View.VISIBLE);
+                binding.notificationLv.setVisibility(View.VISIBLE);
                 binding.notificationLv.setClipToPadding(false);
                 binding.notificationLv.setAdapter(adapter);
                 adapter.setOnLongClickListener(position -> {

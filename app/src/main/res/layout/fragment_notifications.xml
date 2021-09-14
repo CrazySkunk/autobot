@@ -19,8 +19,8 @@
 
     <ImageView
         android:id="@+id/no_notifications_yet_im"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_gravity="center_horizontal|center"
         android:contentDescription="@string/pic"
         android:src="@drawable/empty_tray"
@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|center"
-        android:layout_marginTop="130sp"
+        android:layout_marginTop="200dp"
         android:text="@string/no_notifications_created_yet"
         android:visibility="gone"
         tools:visibility="visible" />

@@ -36,9 +36,15 @@ import com.example.autobot1.R;
 import com.example.autobot1.activities.landing.viewmodels.MechanicShopsViewModel;
 import com.example.autobot1.databinding.CustomMapDialogBinding;
 import com.example.autobot1.databinding.FragmentBookingBinding;
+import com.example.autobot1.databinding.FragmentMapBinding;
 import com.example.autobot1.models.Request;
 import com.example.autobot1.models.ShopItem;
 import com.example.autobot1.models.User;
+import com.example.autobot1.notification.APIService;
+import com.example.autobot1.notification.Client;
+import com.example.autobot1.notification.Data;
+import com.example.autobot1.notification.MyResponse;
+import com.example.autobot1.notification.Sender;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
@@ -63,13 +69,17 @@ import com.google.maps.GeoApiContext;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MapFragment extends Fragment implements RoutingListener, OnMapReadyCallback {
 
     private static final String LATITUDE = "latitude";
     private static final String LONGITUDE = "longitude";
     private static final String UID = "uid";
     public static final String TAG = "Map fragment";
-    private FragmentBookingBinding binding;
+    private FragmentMapBinding binding;
     private FusedLocationProviderClient client;
     private SupportMapFragment fragment;
     protected MechanicShopsViewModel viewModel;
@@ -86,6 +96,7 @@ public class MapFragment extends Fragment implements RoutingListener, OnMapReady
     private Request booking;
     private List<Polyline> polyLines = null;
     private List<ShopItem> shopItemListGlobal;
+    private APIService apiService;
 
 
     public MapFragment() {
@@ -95,10 +106,10 @@ public class MapFragment extends Fragment implements RoutingListener, OnMapReady
     public static MapFragment newInstance(String latitude, String longitude, String uid) {
         MapFragment fragment = new MapFragment();
         Bundle args = new Bundle();
-        args.putString(LATITUDE, latitude);
-        args.putString(LONGITUDE, longitude);
-        args.putString(UID, uid);
-        fragment.setArguments(args);
+            args.putString(LATITUDE, latitude);
+            args.putString(LONGITUDE, longitude);
+            args.putString(UID, uid);
+            fragment.setArguments(args);
         return fragment;
     }
 
@@ -107,18 +118,20 @@ public class MapFragment extends Fragment implements RoutingListener, OnMapReady
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(MechanicShopsViewModel.class);
         client = LocationServices.getFusedLocationProviderClient(requireActivity());
+        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
         getTypeOfUser(FirebaseAuth.getInstance().getUid());
         if (getArguments() != null) {
             latitude = getArguments().getDouble(LATITUDE);
             longitude = getArguments().getDouble(LONGITUDE);
             uid = getArguments().getString(UID);
+            end = new LatLng(latitude,longitude);
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentBookingBinding.inflate(inflater, container, false);
+        binding = FragmentMapBinding.inflate(inflater, container, false);
         view = inflater.inflate(R.layout.fragment_map, container, false);
         fragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.google_map);
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -170,10 +183,10 @@ public class MapFragment extends Fragment implements RoutingListener, OnMapReady
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public boolean onQueryTextChange(String newText) {
-                List<ShopItem>searches = new ArrayList<>();
+                List<ShopItem> searches = new ArrayList<>();
                 shopItemListGlobal.forEach(shopItem -> {
                     if (shopItem.getTitle().contains(newText) || shopItem.getDescription().contains(newText) || shopItem.getContact().contains(newText)
-                            || String.valueOf(shopItem.getLatitude()).contains(newText) || String.valueOf(shopItem.getLongitude()).contains(newText)){
+                            || String.valueOf(shopItem.getLatitude()).contains(newText) || String.valueOf(shopItem.getLongitude()).contains(newText)) {
                         searches.add(shopItem);
                     }
                 });
@@ -224,7 +237,7 @@ public class MapFragment extends Fragment implements RoutingListener, OnMapReady
                     map.setOnInfoWindowClickListener(marker -> {
                         LatLng pos = marker.getPosition();
                         shops.forEach(shop1 -> {
-                            if (new LatLng(shop1.getLatitude(),shop1.getLongitude()).equals(pos)) {
+                            if (new LatLng(shop1.getLatitude(), shop1.getLongitude()).equals(pos)) {
                                 end = pos;
                                 View v = LayoutInflater.from(requireContext()).inflate(R.layout.custom_map_dialog, null, false);
                                 AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
@@ -253,8 +266,9 @@ public class MapFragment extends Fragment implements RoutingListener, OnMapReady
             }
         }
     }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private void populateMapSearch(List<ShopItem>shopItemList) {
+    private void populateMapSearch(List<ShopItem> shopItemList) {
         shops = shopItemList;
         if (shops.isEmpty()) {
             Toast.makeText(requireContext(), "Clients not found", Toast.LENGTH_SHORT).show();
@@ -271,7 +285,7 @@ public class MapFragment extends Fragment implements RoutingListener, OnMapReady
                     map.setOnInfoWindowClickListener(marker -> {
                         LatLng pos = marker.getPosition();
                         shops.forEach(shop1 -> {
-                            if (new LatLng(shop1.getLatitude(),shop1.getLongitude()).equals(pos)) {
+                            if (new LatLng(shop1.getLatitude(), shop1.getLongitude()).equals(pos)) {
                                 end = pos;
                                 View v = LayoutInflater.from(requireContext()).inflate(R.layout.custom_map_dialog, null, false);
                                 AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
@@ -288,7 +302,26 @@ public class MapFragment extends Fragment implements RoutingListener, OnMapReady
                                     intent.putExtra("number", shop1.getContact());
                                     startActivity(intent);
                                 });
-                                binding.mapDialogDirectionBtn.setOnClickListener(view13 -> findRoutes(start, end));
+                                binding.mapDialogDirectionBtn.setOnClickListener(view13 -> {
+                                    findRoutes(start, end);
+                                    Data data = new Data(FirebaseAuth.getInstance().getUid(), "New request from " + mUser.getName(), "Autobot", mUser.getDeviceToken(), R.mipmap.launcher_icon);
+                                    Sender sender = new Sender(data, mUser.getDeviceToken());
+                                    apiService.sendNotification(sender).enqueue(new Callback<MyResponse>() {
+                                        @Override
+                                        public void onResponse(@NonNull Call<MyResponse> call, @NonNull Response<MyResponse> response) {
+                                            if (response.isSuccessful()) {
+                                                if (response.body().success != -1) {
+                                                    Toast.makeText(requireContext(), "Failed to send notification...", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(@NonNull Call<MyResponse> call, @NonNull Throwable t) {
+                                            Log.e(TAG, "onFailure: -> " + t.getMessage());
+                                        }
+                                    });
+                                });
                                 builder.setCancelable(true);
                                 builder.setView(v);
                                 AlertDialog alertDialog = builder.create();

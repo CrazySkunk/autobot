@@ -8,13 +8,14 @@ import com.google.android.gms.maps.model.LatLng;
 public class Request implements Parcelable {
     private String from,to,fromName,toName;
     private Long time;
-    private LatLng location;
+    private double latitude,longitude;
 
-    public Request(String from, String fromName,String to, String toName,Long time, LatLng location) {
+    public Request(String from, String fromName,String to, String toName,Long time, double latitude,double longitude) {
         this.from = from;
         this.to = to;
         this.time = time;
-        this.location = location;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
 
@@ -23,12 +24,8 @@ public class Request implements Parcelable {
         to = in.readString();
         fromName = in.readString();
         toName = in.readString();
-        if (in.readByte() == 0) {
-            time = null;
-        } else {
-            time = in.readLong();
-        }
-        location = in.readParcelable(LatLng.class.getClassLoader());
+        latitude = in.readDouble();
+        longitude = in.readDouble();
     }
 
     @Override
@@ -37,13 +34,8 @@ public class Request implements Parcelable {
         dest.writeString(to);
         dest.writeString(fromName);
         dest.writeString(toName);
-        if (time == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeLong(time);
-        }
-        dest.writeParcelable(location, flags);
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
     }
 
     @Override
@@ -103,11 +95,19 @@ public class Request implements Parcelable {
         this.time = time;
     }
 
-    public LatLng getLocation() {
-        return location;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setLocation(LatLng location) {
-        this.location = location;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 }

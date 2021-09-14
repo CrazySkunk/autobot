@@ -22,6 +22,9 @@ public class ShopItem implements Parcelable {
         this.contact = contact;
     }
 
+    public ShopItem() {
+        //noargs constructor
+    }
 
     protected ShopItem(Parcel in) {
         title = in.readString();

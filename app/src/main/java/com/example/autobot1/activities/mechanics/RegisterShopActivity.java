@@ -1,6 +1,7 @@
 package com.example.autobot1.activities.mechanics;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,6 +15,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -23,6 +25,9 @@ import com.example.autobot1.databinding.ActivityRegisterShopBinding;
 import com.example.autobot1.models.ShopItem;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
@@ -47,27 +52,17 @@ public class RegisterShopActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         Snackbar.make(binding.getRoot(), "Make sure you are the shop during this process so we can determine shop's actual position", Snackbar.LENGTH_LONG).show();
         FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(this);
+
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 700);
         } else {
-            client.getLastLocation().addOnSuccessListener(location -> lastLocation = location);
-            binding.shopLocationEt.setText(String.format("Lat: %s  Long: %s", lastLocation.getLatitude(), lastLocation.getLongitude()));
-        }
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        try {
-            List<Address> addresses = geocoder.getFromLocation(lastLocation.getLatitude(), lastLocation.getLongitude(), 1);
-            if (addresses == null || addresses.isEmpty()) {
-                Snackbar.make(binding.getRoot(), "Try again", Snackbar.LENGTH_LONG).show();
-            } else {
-                Address address = addresses.get(0);
-                List<String> ad = new ArrayList<>();
-                for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
-                    ad.add(address.getAddressLine(i));
-                }
-                binding.shopAddressEt.setText(ad.get(0));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+            @SuppressLint("MissingPermission") Task<Location> task = client.getLastLocation();
+            task.addOnCompleteListener(task1 -> {
+                lastLocation = task1.getResult();
+                binding.shopLocationEt.setText(String.format("%s,%s", lastLocation.getLatitude(), lastLocation.getLongitude()));
+                getAddress();
+            });
         }
         binding.shopIv.setOnClickListener(view -> {
             if (canReadStorage()) {
@@ -90,11 +85,12 @@ public class RegisterShopActivity extends AppCompatActivity {
                 if (imageUri.getPath().isEmpty()) {
                     Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show();
                 } else {
-                    StorageReference reference = FirebaseStorage.getInstance().getReference("user-images/" + FirebaseAuth.getInstance().getUid());
+                    StorageReference reference = FirebaseStorage.getInstance().getReference("shop-images/" + FirebaseAuth.getInstance().getUid());
                     reference.putFile(imageUri)
                             .addOnSuccessListener(taskSnapshot -> reference.getDownloadUrl().addOnSuccessListener(uri -> {
-                                com.google.android.gms.maps.model.LatLng loc = new com.google.android.gms.maps.model.LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
-                                ShopItem shopItem = new ShopItem(name, loc.latitude,loc.longitude, description, uri.toString(), contact);
+                                Log.i(TAG, "onCreate: -> image uploaded successfully");
+                                LatLng loc = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+                                ShopItem shopItem = new ShopItem(name, loc.latitude, loc.longitude, description, uri.toString(), contact);
                                 uploadShop(shopItem);
                             }));
                 }
@@ -102,20 +98,39 @@ public class RegisterShopActivity extends AppCompatActivity {
         });
     }
 
+    private void getAddress() {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(lastLocation.getLatitude(), lastLocation.getLongitude(), 1);
+            if (addresses == null || addresses.isEmpty()) {
+                Snackbar.make(binding.getRoot(), "Try again", Snackbar.LENGTH_LONG).show();
+            } else {
+                Address address = addresses.get(0);
+                List<String> ad = new ArrayList<>();
+                for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
+                    ad.add(address.getAddressLine(i));
+                }
+                binding.shopAddressEt.setText(ad.get(0));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void uploadShop(ShopItem shopItem) {
         FirebaseDatabase.getInstance().getReference("shops/" + FirebaseAuth.getInstance().getUid())
                 .setValue(shopItem).addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.isComplete()) {
-                        startActivity(new Intent(RegisterShopActivity.this, MapActivity.class));
-                        finish();
-                    }
-                });
+            if (task.isSuccessful() && task.isComplete()) {
+                startActivity(new Intent(RegisterShopActivity.this, MapActivity.class));
+                finish();
+            }
+        });
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode,Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 400 && resultCode == Activity.RESULT_OK && data != null) {
+        if (requestCode == 300 && resultCode == Activity.RESULT_OK && data != null) {
             imageUri = data.getData();
             try {
                 Bitmap bm = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);

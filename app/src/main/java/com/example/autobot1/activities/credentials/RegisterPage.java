@@ -9,6 +9,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,10 +20,14 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +35,7 @@ import java.util.Objects;
 
 public class RegisterPage extends AppCompatActivity {
     private String accountType;
+    private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,14 +87,15 @@ public class RegisterPage extends AppCompatActivity {
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
                 assert user != null;
-                addUserToDB(user.getUid(),name,email,imageUri,phone,accountType);
+                token = FirebaseInstanceId.getInstance().getToken();
+                addUserToDB(user.getUid(),name,email,imageUri,phone,accountType,token);
             }
         }else {
             Toast.makeText(this,"Something went wrong try again",Toast.LENGTH_SHORT).show();
         }
     }
-    private void addUserToDB(String uid,String name,String email,String imageUri,String phone,String accountType){
-        User user = new User(uid,name,email,imageUri,phone,accountType);
+    private void addUserToDB(String uid,String name,String email,String imageUri,String phone,String accountType,String deviceToken){
+        User user = new User(uid,name,email,imageUri,phone,accountType,deviceToken);
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users/"+uid);
         reference.setValue(user)
                 .addOnCompleteListener(task -> {

@@ -36,6 +36,7 @@ import com.example.autobot1.models.User;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -51,6 +52,7 @@ public class SignUpFragment extends Fragment {
     private Uri imageUri;
     private ProgressDialog progressDialog;
     private CredentialsViewModel credentialsViewModel;
+    private String token;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -165,7 +167,8 @@ public class SignUpFragment extends Fragment {
                 .addOnSuccessListener(taskSnapshot -> {
                     reference.getDownloadUrl().addOnSuccessListener(uri -> {
                         progressDialog.setMessage("Almost there...");
-                        addUserToDb(name, email, uri.toString(), phoneNo, accountType);
+                        token = FirebaseInstanceId.getInstance().getToken();
+                        addUserToDb(name, email, uri.toString(), phoneNo, accountType,token);
                     });
                 });
     }
@@ -195,8 +198,8 @@ public class SignUpFragment extends Fragment {
         }
     }
 
-    private void addUserToDb(String name, String email, String downloadUrl, String phoneNo, String accountType) {
-        User user = new User(FirebaseAuth.getInstance().getUid(), name, email, downloadUrl, phoneNo, accountType);
+    private void addUserToDb(String name, String email, String downloadUrl, String phoneNo, String accountType,String deviceToken) {
+        User user = new User(FirebaseAuth.getInstance().getUid(), name, email, downloadUrl, phoneNo, accountType,deviceToken);
         Log.i(TAG, "addUserToDb: User -> " + user);
         FirebaseDatabase.getInstance().getReference("users/" + user.getUid())
                 .setValue(user)

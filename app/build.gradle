@@ -59,6 +59,11 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:28.2.1')
     implementation 'com.google.firebase:firebase-analytics'
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
+    implementation platform('com.google.firebase:firebase-bom:26.8.0')
+    implementation 'com.google.firebase:firebase-analytics:19.0.1'
+    implementation 'com.google.firebase:firebase-messaging:19.0.1'
+    implementation 'com.google.firebase:firebase-iid:21.0.1'
+
     def room_version = "2.3.0"
 
     implementation "androidx.room:room-runtime:$room_version"
@@ -75,6 +80,12 @@ dependencies {
     // Required only if Facebook login support is required
     // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
     implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
+
+    //retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.8.1'
 
 
     implementation 'de.hdodenhof:circleimageview:3.1.0'

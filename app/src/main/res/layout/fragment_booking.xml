@@ -30,7 +30,6 @@
             android:layout_height="0dp"
             android:layout_below="@+id/textBooking"
             android:background="@drawable/et_bg"
-            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textBooking"
             app:layout_constraintVertical_weight="1"
