@@ -36,7 +36,7 @@ public class MechanicShopsViewModel extends AndroidViewModel {
                             ShopItem shopItem = ds.getValue(ShopItem.class);
                             if (shopItem!=null){
                                 shops.add(shopItem);
-                                Log.i(TAG, "onDataChange: shop -> "+shopItem);
+                                Log.i(TAG, "onDataChange: shop -> "+shopItem.toString());
                             }
                         }
                     }

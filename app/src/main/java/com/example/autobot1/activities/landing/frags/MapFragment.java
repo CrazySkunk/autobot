@@ -97,6 +97,7 @@ public class MapFragment extends Fragment implements RoutingListener, OnMapReady
     private List<Polyline> polyLines = null;
     private List<ShopItem> shopItemListGlobal;
     private APIService apiService;
+    private List<ShopItem> shopItemList;
 
 
     public MapFragment() {
@@ -106,10 +107,10 @@ public class MapFragment extends Fragment implements RoutingListener, OnMapReady
     public static MapFragment newInstance(String latitude, String longitude, String uid) {
         MapFragment fragment = new MapFragment();
         Bundle args = new Bundle();
-            args.putString(LATITUDE, latitude);
-            args.putString(LONGITUDE, longitude);
-            args.putString(UID, uid);
-            fragment.setArguments(args);
+        args.putString(LATITUDE, latitude);
+        args.putString(LONGITUDE, longitude);
+        args.putString(UID, uid);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -118,13 +119,14 @@ public class MapFragment extends Fragment implements RoutingListener, OnMapReady
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(MechanicShopsViewModel.class);
         client = LocationServices.getFusedLocationProviderClient(requireActivity());
+        shopItemList = new ArrayList<>();
         apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
         getTypeOfUser(FirebaseAuth.getInstance().getUid());
         if (getArguments() != null) {
             latitude = getArguments().getDouble(LATITUDE);
             longitude = getArguments().getDouble(LONGITUDE);
             uid = getArguments().getString(UID);
-            end = new LatLng(latitude,longitude);
+            end = new LatLng(latitude, longitude);
         }
     }
 
@@ -164,6 +166,7 @@ public class MapFragment extends Fragment implements RoutingListener, OnMapReady
                 .snippet("Iam here");
         googleMap.addMarker(markerOptions);
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(start, 10));
+        getShopsAround();
         populateMap();
     }
 
@@ -221,8 +224,7 @@ public class MapFragment extends Fragment implements RoutingListener, OnMapReady
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void populateMap() {
-        shops = getShopsAround();
-        if (shops.isEmpty()) {
+        if (shopItemList.isEmpty()) {
             Toast.makeText(requireContext(), "Clients not found", Toast.LENGTH_SHORT).show();
         } else {
             for (ShopItem shop : shops) {
@@ -336,24 +338,25 @@ public class MapFragment extends Fragment implements RoutingListener, OnMapReady
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public List<ShopItem> getShopsAround() {
-        List<ShopItem> shopItemList = new ArrayList<>();
-        viewModel.getShops().observe(getViewLifecycleOwner(), shopItems ->
-                shopItems.forEach(shopItem -> {
-                    shopItemListGlobal = shopItems;
-                    if (shopItem.getLatitude() == latitude + 0.5 && shopItem.getLongitude() == longitude + 0.5) {
-                        shopItemList.add(shopItem);
-                    } else if (shopItem.getLatitude() == latitude + 0.4 && shopItem.getLongitude() == longitude + 0.4) {
-                        shopItemList.add(shopItem);
-                    } else if (shopItem.getLatitude() == latitude + 0.3 && shopItem.getLongitude() == longitude + 0.3) {
-                        shopItemList.add(shopItem);
-                    } else if (shopItem.getLatitude() == latitude + 0.2 && shopItem.getLongitude() == longitude + 0.2) {
-                        shopItemList.add(shopItem);
-                    } else if (shopItem.getLatitude() == latitude + 0.1 && shopItem.getLongitude() == longitude + 0.1) {
-                        shopItemList.add(shopItem);
+    public void getShopsAround() {
+        FirebaseDatabase.getInstance().getReference("shops")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot ds:snapshot.getChildren()){
+                            ShopItem shopItem = ds.getValue(ShopItem.class);
+                            if (shopItem!=null){
+                                shopItemList.add(shopItem);
+                                Log.i(TAG, "getShopsAround: shop -> "+shopItem.toString());
+                            }
+                        }
                     }
-                }));
-        return shopItemList;
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.i(TAG, "onCancelled: error -> "+error.getMessage());
+                    }
+                });
     }
 
     @Override

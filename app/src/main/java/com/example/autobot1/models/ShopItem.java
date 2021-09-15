@@ -3,6 +3,7 @@ package com.example.autobot1.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -105,5 +106,11 @@ public class ShopItem implements Parcelable {
 
     public void setContact(String contact) {
         this.contact = contact;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "title: "+title+"\n"+"description: "+description+"\n"+"Lat,Long: "+latitude+" , "+longitude+"imageurl: "+imageUrl+"\n"+"contact: "+contact;
     }
 }
