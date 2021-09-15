@@ -55,7 +55,7 @@ public class MapActivity extends AppCompatActivity implements NavigationView.OnN
     protected ActionBarDrawerToggle actionBarDrawerToggle;
     protected DrawerLayout drawerLayout;
     protected Toolbar toolbar;
-    private List<AccountType> accountType;
+//    private List<AccountType> accountType;
     private String type;
 
 
@@ -65,12 +65,12 @@ public class MapActivity extends AppCompatActivity implements NavigationView.OnN
         CredentialsViewModel credentialsViewModel = new ViewModelProvider(this).get(CredentialsViewModel.class);
         binding = ActivityMapBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        accountType = credentialsViewModel.getAccountType();
-        type = accountType.get(0).getAccountType();
+//        accountType = credentialsViewModel.getAccountType();
+//        type = accountType.get(0).getAccountType();
         Log.i(TAG, "onCreate: accountType -> " + type);
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.frame_layout, new MapFragment())
+                .add(R.id.frame_layout, new MechanicShopsFragment())
                 .commit();
         drawerLayout = binding.drawerLayout;
         NavigationView navigationView = binding.navDrawer;
@@ -97,27 +97,29 @@ public class MapActivity extends AppCompatActivity implements NavigationView.OnN
         } else if (item.getItemId() == R.id.shop_parts) {
             inflateFragContainer(new SpecificShopFragment());
             Objects.requireNonNull(getSupportActionBar()).setTitle("Mechanic shops");
-        } else if (item.getItemId() == R.id.map) {
-            inflateFragContainer(new MapFragment());
-            Objects.requireNonNull(getSupportActionBar()).setTitle("Map");
+//        } else if (item.getItemId() == R.id.map) {
+//            inflateFragContainer(new MapFragment());
+//            Objects.requireNonNull(getSupportActionBar()).setTitle("Map");
+//        }
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.main_menu,menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
 
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.add_product_item_mechanic:
-                startActivity(new Intent(this,AddProductActivity.class));
+                startActivity(new Intent(this, AddProductActivity.class));
                 break;
             case R.id.shop_item_all:
                 inflateFragContainer(new MechanicShopsFragment());

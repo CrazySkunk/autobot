@@ -7,17 +7,21 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class Request implements Parcelable {
     private String from,to,fromName,toName;
-    private Long time;
+    private long time;
     private double latitude,longitude;
 
-    public Request(String from, String fromName,String to, String toName,Long time, double latitude,double longitude) {
+    public Request(String from, String fromName,String to, String toName,long time, double latitude,double longitude) {
         this.from = from;
+        this.fromName=fromName;
         this.to = to;
+        this.toName=toName;
         this.time = time;
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
+    public Request() {
+    }
 
     protected Request(Parcel in) {
         from = in.readString();
@@ -87,11 +91,11 @@ public class Request implements Parcelable {
         this.to = to;
     }
 
-    public Long getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(Long time) {
+    public void setTime(long time) {
         this.time = time;
     }
 

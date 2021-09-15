@@ -3,6 +3,7 @@ package com.example.autobot1.activities.mechanics;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -16,7 +17,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -26,7 +26,6 @@ import com.example.autobot1.models.ShopItem;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,6 +35,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -44,12 +44,17 @@ public class RegisterShopActivity extends AppCompatActivity {
     private ActivityRegisterShopBinding binding;
     private Location lastLocation;
     private Uri imageUri;
+    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityRegisterShopBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        progressDialog = new ProgressDialog(this);
+                progressDialog.setTitle("Autobot");
+                progressDialog.setMessage("Please wait...");
+                progressDialog.setCancelable(false);
         Snackbar.make(binding.getRoot(), "Make sure you are the shop during this process so we can determine shop's actual position", Snackbar.LENGTH_LONG).show();
         FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(this);
 
@@ -74,6 +79,7 @@ public class RegisterShopActivity extends AppCompatActivity {
             }
         });
         binding.submitBtn.setOnClickListener(view -> {
+            progressDialog.show();
             String name = binding.shopNameEt.getText().toString().trim();
             String description = binding.shopDescriptionEt.getText().toString().trim();
             String location = binding.shopLocationEt.getText().toString().trim();
@@ -121,10 +127,21 @@ public class RegisterShopActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference("shops/" + FirebaseAuth.getInstance().getUid())
                 .setValue(shopItem).addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.isComplete()) {
+                progressDialog.dismiss();
                 startActivity(new Intent(RegisterShopActivity.this, MapActivity.class));
                 finish();
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode==400 && Arrays.equals(permissions,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}) && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            startActivityIfNeeded(intent,300);
+        }
     }
 
     @Override

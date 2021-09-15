@@ -1,5 +1,7 @@
 package com.example.autobot1.adapters;
 
+import android.app.Application;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,9 +25,9 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ShopViewHolder
     private OnItemClick listener;
     private final FavShopViewModel viewModel;
 
-    public ShopAdapter(List<ShopItem> shopItems) {
+    public ShopAdapter(List<ShopItem> shopItems, Application application) {
         this.shopItems = shopItems;
-        viewModel = new ViewModelProvider((ViewModelStoreOwner) this).get(FavShopViewModel.class);
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(application).create(FavShopViewModel.class);
     }
 
     public interface OnItemClick {

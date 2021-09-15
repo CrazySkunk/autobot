@@ -53,13 +53,16 @@ public class MechanicShopsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentMechanicShopsBinding.inflate(inflater, container, false);
         viewModel.getShops().observe(getViewLifecycleOwner(), shopItems -> {
-            if (shopItems.isEmpty()) {
-                binding.emptyTrayIv.setVisibility(View.VISIBLE);
-                binding.emptyTrayTv.setVisibility(View.VISIBLE);
-                binding.shopsRecycler.setVisibility(View.INVISIBLE);
-            } else {
+//            if (shopItems.isEmpty()) {
+//                binding.emptyTrayIv.setVisibility(View.VISIBLE);
+//                binding.emptyTrayTv.setVisibility(View.VISIBLE);
+//                binding.shopsRecycler.setVisibility(View.INVISIBLE);
+//            } else {
+//                binding.emptyTrayIv.setVisibility(View.GONE);
+//                binding.emptyTrayTv.setVisibility(View.GONE);
+//                binding.shopsRecycler.setVisibility(View.VISIBLE);
                 shopsRecycler = binding.shopsRecycler;
-                ShopAdapter shopAdapter = new ShopAdapter(shopItems);
+                ShopAdapter shopAdapter = new ShopAdapter(shopItems, requireActivity().getApplication());
                 shops = shopItems;
                 shopsRecycler.setLayoutManager(new StaggeredGridLayoutManager(2, RecyclerView.VERTICAL));
                 shopsRecycler.setClipToPadding(false);
@@ -80,7 +83,7 @@ public class MechanicShopsFragment extends Fragment {
                             String.valueOf(shopItems.get(position).getLongitude()),
                             false));
                 });
-            }
+//            }
         });
 
         setHasOptionsMenu(true);
@@ -110,7 +113,7 @@ public class MechanicShopsFragment extends Fragment {
                         shopItemList.add(shopItem);
                     }
                 });
-                ShopAdapter shopAdapter = new ShopAdapter(shopItemList);
+                ShopAdapter shopAdapter = new ShopAdapter(shopItemList,requireActivity().getApplication());
                 shopsRecycler.setLayoutManager(new StaggeredGridLayoutManager(2, RecyclerView.VERTICAL));
                 shopsRecycler.setClipToPadding(false);
                 shopsRecycler.hasFixedSize();

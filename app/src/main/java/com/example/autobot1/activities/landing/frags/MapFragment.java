@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -68,6 +69,7 @@ import com.google.maps.GeoApiContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -220,6 +222,18 @@ public class MapFragment extends Fragment implements RoutingListener, OnMapReady
                         Log.i(TAG, "onCancelled: getTypeOfUser -> " + error.getMessage());
                     }
                 });
+
+    }
+
+    public void go() {
+        //d - driving w - walking b - bicycle l - two less vehicles
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=22.659239,88.435534&mode=l"));
+        intent.setPackage("com.google.android.apps.maps");
+        if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+            startActivity(intent);
+        }else {
+            Snackbar.make(binding.getRoot(),"You do not have google maps",Snackbar.LENGTH_LONG).setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_FADE).show();
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -343,18 +357,18 @@ public class MapFragment extends Fragment implements RoutingListener, OnMapReady
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot ds:snapshot.getChildren()){
+                        for (DataSnapshot ds : snapshot.getChildren()) {
                             ShopItem shopItem = ds.getValue(ShopItem.class);
-                            if (shopItem!=null){
+                            if (shopItem != null) {
                                 shopItemList.add(shopItem);
-                                Log.i(TAG, "getShopsAround: shop -> "+shopItem.toString());
+                                Log.i(TAG, "getShopsAround: shop -> " + shopItem.toString());
                             }
                         }
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Log.i(TAG, "onCancelled: error -> "+error.getMessage());
+                        Log.i(TAG, "onCancelled: error -> " + error.getMessage());
                     }
                 });
     }

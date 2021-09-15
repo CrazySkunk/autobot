@@ -76,14 +76,33 @@ public class BookingsAdapter extends ArrayAdapter<Request> {
             result = convertView;
         }
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yy HH:mm", Locale.getDefault());
-        User user = getUser(bookings.get(position).getFrom());
-        Picasso.get().load(user.getImageUrl()).placeholder(R.drawable.account_circle).into(viewHolder.imageView);
+        ViewHolder finalViewHolder = viewHolder;
+        FirebaseDatabase.getInstance().getReference("users")
+                .addValueEventListener(new ValueEventListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        snapshot.getChildren().forEach(user -> {
+                            User user1 = user.getValue(User.class);
+                            if (user1 != null)
+                                if (user1.getUid().equals(bookings.get(position).getFrom())){
+                                    Picasso.get().load(user1.getImageUrl()).placeholder(R.drawable.account_circle).into(finalViewHolder.imageView);
+                                }
+                        });
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.i(TAG, "onCancelled: getTypeOfUser -> " + error.getMessage());
+                    }
+                });
         viewHolder.name.setText(bookings.get(position).getFromName());
         viewHolder.meetUpTime.setText(simpleDateFormat.format(bookings.get(position).getTime()));
         Animation animation = AnimationUtils.loadAnimation(context, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
         result.startAnimation(animation);
         lastPosition = position;
-        result.setOnClickListener(view -> listener.onItemClick(position));
+        viewHolder.name.setOnClickListener(view -> listener.onItemClick(position));
         return convertView;
     }
     private User getUser(String uid) {
