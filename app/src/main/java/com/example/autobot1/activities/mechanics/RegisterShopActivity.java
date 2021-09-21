@@ -96,7 +96,7 @@ public class RegisterShopActivity extends AppCompatActivity {
                             .addOnSuccessListener(taskSnapshot -> reference.getDownloadUrl().addOnSuccessListener(uri -> {
                                 Log.i(TAG, "onCreate: -> image uploaded successfully");
                                 LatLng loc = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
-                                ShopItem shopItem = new ShopItem(name, loc.latitude, loc.longitude, description, uri.toString(), contact);
+                                ShopItem shopItem = new ShopItem(name, loc.latitude, loc.longitude, description, uri.toString(), contact,binding.shopAddressEt.getText().toString());
                                 uploadShop(shopItem);
                             }));
                 }

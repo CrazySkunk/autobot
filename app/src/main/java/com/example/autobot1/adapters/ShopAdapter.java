@@ -23,6 +23,7 @@ import java.util.List;
 public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ShopViewHolder> {
     private final List<ShopItem> shopItems;
     private OnItemClick listener;
+    private OnItemLongClick longClickListener;
     private final FavShopViewModel viewModel;
 
     public ShopAdapter(List<ShopItem> shopItems, Application application) {
@@ -33,9 +34,15 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ShopViewHolder
     public interface OnItemClick {
         void onItemClick(int position);
     }
+    public interface OnItemLongClick {
+        void onItemLongClick(int position);
+    }
 
     public void setOnItemClickListener(OnItemClick listener) {
         this.listener = listener;
+    }
+    public void setOnItemLongClickListener(OnItemLongClick listener) {
+        this.longClickListener = listener;
     }
 
     @NonNull
@@ -43,7 +50,8 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ShopViewHolder
     public ShopViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ShopViewHolder(
                 LayoutInflater.from(parent.getContext()).inflate(R.layout.shop_item, parent, false),
-                listener
+                listener,
+                longClickListener
         );
     }
 
@@ -64,7 +72,7 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ShopViewHolder
     static class ShopViewHolder extends RecyclerView.ViewHolder {
         private final ShopItemBinding binding;
 
-        public ShopViewHolder(View itemView, OnItemClick listener) {
+        public ShopViewHolder(View itemView, OnItemClick listener,OnItemLongClick longClick) {
             super(itemView);
             binding = ShopItemBinding.bind(itemView);
             itemView.setOnClickListener(view -> {
@@ -72,6 +80,13 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ShopViewHolder
                 if (position != RecyclerView.NO_POSITION) {
                     listener.onItemClick(position);
                 }
+            });
+            itemView.setOnLongClickListener(view -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    longClick.onItemLongClick(position);
+                }
+                return true;
             });
         }
 

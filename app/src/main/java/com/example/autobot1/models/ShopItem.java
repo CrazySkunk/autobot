@@ -10,17 +10,18 @@ import com.google.android.gms.maps.model.LatLng;
 
 
 public class ShopItem implements Parcelable {
-    private String title, description,imageUrl,contact;
+    private String title,description,imageUrl,contact,geocode;
     private double latitude;
     private double longitude;
 
-    public ShopItem(String title, double latitude, double longitude,String description,String imageUrl,String contact) {
+    public ShopItem(String title, double latitude, double longitude,String description,String imageUrl,String contact,String geocode) {
         this.title = title;
         this.latitude = latitude;
         this.longitude = longitude;
         this.description = description;
         this.imageUrl = imageUrl;
         this.contact = contact;
+        this.geocode = geocode;
     }
 
     public ShopItem() {
@@ -106,6 +107,14 @@ public class ShopItem implements Parcelable {
 
     public void setContact(String contact) {
         this.contact = contact;
+    }
+
+    public String getGeocode() {
+        return geocode;
+    }
+
+    public void setGeocode(String geocode) {
+        this.geocode = geocode;
     }
 
     @NonNull

@@ -1,5 +1,7 @@
 package com.example.autobot1.activities.landing.frags;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,6 +27,8 @@ import com.example.autobot1.adapters.ShopAdapter;
 import com.example.autobot1.databinding.FragmentMechanicShopsBinding;
 import com.example.autobot1.models.RecentShopItem;
 import com.example.autobot1.models.ShopItem;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,38 +60,53 @@ public class MechanicShopsFragment extends Fragment {
 //            if (shopItems.isEmpty()) {
 //                binding.emptyTrayIv.setVisibility(View.VISIBLE);
 //                binding.emptyTrayTv.setVisibility(View.VISIBLE);
-//                binding.shopsRecycler.setVisibility(View.INVISIBLE);
+////                binding.shopsRecycler.setVisibility(View.INVISIBLE);
 //            } else {
-//                binding.emptyTrayIv.setVisibility(View.GONE);
-//                binding.emptyTrayTv.setVisibility(View.GONE);
-//                binding.shopsRecycler.setVisibility(View.VISIBLE);
-                shopsRecycler = binding.shopsRecycler;
-                ShopAdapter shopAdapter = new ShopAdapter(shopItems, requireActivity().getApplication());
-                shops = shopItems;
-                shopsRecycler.setLayoutManager(new StaggeredGridLayoutManager(2, RecyclerView.VERTICAL));
-                shopsRecycler.setClipToPadding(false);
-                shopsRecycler.hasFixedSize();
-                shopsRecycler.setAdapter(shopAdapter);
-                shopAdapter.setOnItemClickListener(position -> {
-                    requireActivity().getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.nav_host_fragment_container,
-                                    SpecificShopFragment.newInstance(shopItems.get(position).getTitle()));
-                    recentShopsViewModel.addRecentShop(new RecentShopItem(
-                            0,
-                            shopItems.get(position).getTitle(),
-                            shopItems.get(position).getDescription(),
-                            shopItems.get(position).getImageUrl(),
-                            shopItems.get(position).getContact(),
-                            String.valueOf(shopItems.get(position).getLatitude()),
-                            String.valueOf(shopItems.get(position).getLongitude()),
-                            false));
-                });
+            binding.emptyTrayIv.setVisibility(View.GONE);
+            binding.emptyTrayTv.setVisibility(View.GONE);
+            binding.shopsRecycler.setVisibility(View.VISIBLE);
+            shopsRecycler = binding.shopsRecycler;
+            ShopAdapter shopAdapter = new ShopAdapter(shopItems, requireActivity().getApplication());
+            shops = shopItems;
+            shopsRecycler.setLayoutManager(new StaggeredGridLayoutManager(2, RecyclerView.VERTICAL));
+            shopsRecycler.setClipToPadding(false);
+            shopsRecycler.hasFixedSize();
+            shopsRecycler.setAdapter(shopAdapter);
+            shopAdapter.setOnItemLongClickListener(position -> {
+
+                go(shopItems.get(position).getGeocode());
+            });
+            shopAdapter.setOnItemClickListener(position -> {
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.nav_host_fragment_container,
+                                SpecificShopFragment.newInstance(shopItems.get(position).getTitle()));
+                recentShopsViewModel.addRecentShop(new RecentShopItem(
+                        0,
+                        shopItems.get(position).getTitle(),
+                        shopItems.get(position).getDescription(),
+                        shopItems.get(position).getImageUrl(),
+                        shopItems.get(position).getContact(),
+                        String.valueOf(shopItems.get(position).getLatitude()),
+                        String.valueOf(shopItems.get(position).getLongitude()),
+                        false));
+            });
 //            }
         });
 
         setHasOptionsMenu(true);
         return binding.getRoot();
+    }
+
+    public void go(String geocode) {
+        //d - driving w - walking b - bicycle l - two less vehicles
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + geocode + "&mode=l"));
+        intent.setPackage("com.google.android.apps.maps");
+        if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            Snackbar.make(binding.getRoot(), "You do not have google maps", Snackbar.LENGTH_LONG).setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_FADE).show();
+        }
     }
 
     @Override
@@ -106,14 +125,14 @@ public class MechanicShopsFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public boolean onQueryTextChange(String newText) {
-                List<ShopItem> shopItemList=new ArrayList<>();
+                List<ShopItem> shopItemList = new ArrayList<>();
                 shops.forEach(shopItem -> {
                     if (shopItem.getTitle().contains(newText) || shopItem.getDescription().contains(newText) || shopItem.getContact().contains(newText)
-                            || String.valueOf(shopItem.getLatitude()).contains(newText) || String.valueOf(shopItem.getLongitude()).contains(newText)){
+                            || String.valueOf(shopItem.getLatitude()).contains(newText) || String.valueOf(shopItem.getLongitude()).contains(newText)) {
                         shopItemList.add(shopItem);
                     }
                 });
-                ShopAdapter shopAdapter = new ShopAdapter(shopItemList,requireActivity().getApplication());
+                ShopAdapter shopAdapter = new ShopAdapter(shopItemList, requireActivity().getApplication());
                 shopsRecycler.setLayoutManager(new StaggeredGridLayoutManager(2, RecyclerView.VERTICAL));
                 shopsRecycler.setClipToPadding(false);
                 shopsRecycler.hasFixedSize();
