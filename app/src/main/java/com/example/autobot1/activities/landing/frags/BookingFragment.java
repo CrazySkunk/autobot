@@ -1,5 +1,9 @@
 package com.example.autobot1.activities.landing.frags;
 
+import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +20,11 @@ import com.example.autobot1.activities.mechanics.viewmodels.BookingsViewModel;
 import com.example.autobot1.adapters.BookingsAdapter;
 import com.example.autobot1.databinding.FragmentBookingBinding;
 import com.example.autobot1.models.Request;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.List;
 
 public class BookingFragment extends Fragment {
     private FragmentBookingBinding binding;
@@ -53,9 +61,24 @@ public class BookingFragment extends Fragment {
                 adapter = new BookingsAdapter(requireContext(), resource, bookings);
                 listView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
-//                adapter.setOnItemClickListener(position -> ((MapActivity) requireActivity()).setMapSelected());
+                adapter.setOnItemClickListener(position -> {
+                    Geocoder geocoder = new Geocoder(requireContext());
+                    List<Address> addresses = geocoder.getFromLocation(bookings.get(position).getLatitude(),bookings.get(position).getLongitude(),0);
+                    go(addresses.get(0).toString());
+                });
             }
         });
+    }
+
+    public void go(String geocode) {
+        //d - driving w - walking b - bicycle l - two less vehicles
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + geocode + "&mode=l"));
+        intent.setPackage("com.google.android.apps.maps");
+        if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            Snackbar.make(binding.getRoot(), "You do not have google maps", Snackbar.LENGTH_LONG).setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_FADE).show();
+        }
     }
 
     public interface SendMessage {

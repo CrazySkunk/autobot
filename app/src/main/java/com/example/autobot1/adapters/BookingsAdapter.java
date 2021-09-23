@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
@@ -47,7 +48,7 @@ public class BookingsAdapter extends ArrayAdapter<Request> {
     }
 
     public interface OnItemClick{
-        void onItemClick(int position);
+        void onItemClick(int position) throws IOException;
     }
 
     public void setOnItemClickListener(OnItemClick listener){
